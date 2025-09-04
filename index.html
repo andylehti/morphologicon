@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Morphological Dictionary — Index</title>
+<style>
+  :root { --bg:#0b0b0c; --fg:#e9e9ea; --muted:#9aa0a6; --link:#8ab4f8; --accent:#4a90e2; }
+  html, body { height: 100%; margin:0; }
+  body { display:flex; background:var(--bg); color:var(--fg); font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; }
+  aside { width: 360px; max-width: 40vw; border-right:1px solid #202124; padding:16px; overflow:auto; }
+  main { flex:1; display:flex; flex-direction:column; min-width:0; }
+  h1 { font-size:18px; margin:0 0 12px; }
+  ul { list-style:none; padding:0; margin:0; }
+  li { margin: 6px 0; }
+  a { color:var(--link); text-decoration:none; }
+  a:hover { text-decoration:underline; }
+  small { color:var(--muted); }
+  .viewer { flex:1; min-height:0; border:0; width:100%; }
+  .header { padding:10px 12px; border-bottom:1px solid #202124; display:flex; align-items:center; gap:12px; }
+  .header select { background:#1a1a1b; color:var(--fg); border:1px solid #303134; padding:6px 8px; border-radius:6px; }
+  .header button { background:#1a73e8; color:white; border:0; padding:6px 10px; border-radius:6px; cursor:pointer; }
+  .header button:hover { background:#2b7de9; }
+</style>
+</head>
+<body>
+  <aside>
+    <h1>Morphological Dictionary</h1>
+    <p>Click a build to load the A3 autoflow:</p>
+    <ul id="list">
+      <li><a href="#" data-file="morpho_abandon.html">Morphological Dictionary (A3 Autoflow, abandon)</a> <small>(morpho_abandon.html)</small></li>
+<li><a href="#" data-file="morpho_audit.html">Morphological Dictionary (A3 Autoflow, audit)</a> <small>(morpho_audit.html)</small></li>
+    </ul>
+  </aside>
+  <main>
+    <div class="header">
+      <label for="picker">Open:</label>
+      <select id="picker">
+        <option value="morpho_abandon.html">Morphological Dictionary (A3 Autoflow, abandon)</option><option value="morpho_audit.html">Morphological Dictionary (A3 Autoflow, audit)</option>
+      </select>
+      <button id="openNew">Open in new tab</button>
+    </div>
+    <iframe id="viewer" class="viewer" src="morpho_abandon.html" title="Autoflow viewer"></iframe>
+  </main>
+<script>
+  const list = document.getElementById('list');
+  const viewer = document.getElementById('viewer');
+  const picker = document.getElementById('picker');
+  const openNew = document.getElementById('openNew');
+
+  function load(file) {
+    if (!file) return;
+    viewer.src = file;
+    for (const opt of picker.options) {
+      opt.selected = (opt.value === file);
+    }
+    history.replaceState(null, '', '#' + encodeURIComponent(file));
+  }
+
+  // Sidebar clicks
+  list.addEventListener('click', (e) => {
+    const a = e.target.closest('a[data-file]');
+    if (a) {
+      e.preventDefault();
+      load(a.dataset.file);
+    }
+  });
+
+  // Picker
+  picker.addEventListener('change', () => load(picker.value));
+
+  // Open in new tab
+  openNew.addEventListener('click', () => {
+    if (picker.value) window.open(picker.value, '_blank');
+  });
+
+  // Support deep‑linking via hash
+  const fromHash = decodeURIComponent(location.hash.slice(1));
+  if (fromHash) load(fromHash);
+</script>
+</body>
+</html>
