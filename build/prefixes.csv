@@ -1,0 +1,39 @@
+prefix,alias_of,origin,sense_1,sense_2,sense_3,sense_4,combine_rule
+a-,,Greek(privative),not,without,lacking,negates,avoid vowel+vowel; prefer an- before vowels
+an-,a-,Greek(privative),not,without,lacking,negates,use before vowels
+anti-,,Greek,against,opposite to,preventing,antidote to,hyphen if proper noun
+auto-,,Greek,self,by itself,autonomous,reflexive,avoid double 'o' visually
+co-,,Latin,with,together,collectively,in collaboration with,assimilates to com-/con-/cor-
+com-,co-,Latin,with,together,collectively,in collaboration with,before b/p/m
+con-,co-,Latin,with,together,collectively,in collaboration with,default assimilation
+cor-,co-,Latin,with,together,collectively,in collaboration with,before r
+de-,,Latin,down,off/reverse,remove,reduce,no elision needed
+dis-,,Latin,apart,away,not,reverse,dif- before f
+en-,,Greek→Fr,in,into,put in,cover with,em- before b/p
+em-,en-,Greek→Fr,in,into,put in,cover with,before b/p
+ex-,,Latin,out of,from,former,emerging,e- before vowels; ef- before f
+e-,ex-,Latin,out of,from,former,emerging,before vowels
+ef-,ex-,Latin,out of,from,former,emerging,before f
+in-,,Latin,not,in/into,without,opposite of,im-/il-/ir- variants
+im-,in-,Latin,not,in/into,without,opposite of,before b/p/m
+il-,in-,Latin,not,in/into,without,opposite of,before l
+ir-,in-,Latin,not,in/into,without,opposite of,before r
+non-,,Latin,not,absence of,other than,non-occurring,hyphen if ambiguity
+re-,,Latin,again,back,anew,repeat,hyphen if re+e base
+sub-,,Latin,under,below,slightly,lesser,suc-/suf-/sup-/sur-/sus-
+suc-,sub-,Latin,under,below,slightly,lesser,before c
+suf-,sub-,Latin,under,below,slightly,lesser,before f
+sup-,sub-,Latin,under,below,slightly,lesser,before p
+sur-,sub-,Latin,under,below,slightly,lesser,before r
+sus-,sub-,Latin,under,below,slightly,lesser,before s
+ad-,,Latin,to,toward,at,intensifier,ac/af/ag/al/an/ap/ar/as/at variants
+ac-,ad-,Latin,to,toward,at,intensifier,before c/q
+af-,ad-,Latin,to,toward,at,intensifier,before f
+ag-,ad-,Latin,to,toward,at,intensifier,before g
+al-,ad-,Latin,to,toward,at,intensifier,before l
+an-,ad-,Latin,to,toward,at,intensifier,before n
+ap-,ad-,Latin,to,toward,at,intensifier,before p
+ar-,ad-,Latin,to,toward,at,intensifier,before r
+as-,ad-,Latin,to,toward,at,intensifier,before s
+at-,ad-,Latin,to,toward,at,intensifier,before t
+co,,Latin,with,together,collectively,in collaboration with,user stem (no dash)
