@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MorphGen Interactive Dictionary</title>
+    <title>The Morphologicon: Morphological Lexical Interactive Dictionary for Research</title>
     <!-- Library for reading CSV files -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
@@ -14,6 +14,8 @@
             --cols: 5;
             --col-gap: 8mm;
             --page-margin: 8mm;
+            
+            /* Light Theme */
             --bg-color: #f4f7f9;
             --panel-bg: #ffffff;
             --text-color: #333;
@@ -21,6 +23,23 @@
             --border-color: #e0e0e0;
             --link-color: #3498db;
             --link-hover: #2980b9;
+            --hover-bg: #eaf2f8;
+            --loader-bg: rgba(255, 255, 255, 0.8);
+            --loader-color: #3498db;
+        }
+
+        .dark-mode {
+            /* Dark Theme */
+            --bg-color: #121212;
+            --panel-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --header-color: #ffffff;
+            --border-color: #333333;
+            --link-color: #8ab4f8;
+            --link-hover: #a3c7f9;
+            --hover-bg: #2c3e50;
+            --loader-bg: rgba(0, 0, 0, 0.7);
+            --loader-color: #8ab4f8;
         }
 
         @page {
@@ -37,6 +56,7 @@
             display: flex;
             height: 100vh;
             overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
         }
         
         @media print {
@@ -44,8 +64,10 @@
                 display: block;
                 height: auto;
                 overflow: visible;
+                background-color: #fff !important;
+                color: #000 !important;
              }
-             .sidebar, .header-controls {
+             .sidebar, .header-controls, .loader-overlay {
                  display: none !important;
              }
              main {
@@ -62,25 +84,31 @@
             flex-direction: column;
             box-shadow: 2px 0 5px rgba(0,0,0,0.05);
             flex-shrink: 0;
+            transition: background-color 0.3s, border-color 0.3s;
         }
         
         .sidebar-header {
             padding: 15px;
             border-bottom: 1px solid var(--border-color);
+            transition: border-color 0.3s;
         }
 
         .sidebar-header h1 {
             font-size: 20px;
             margin: 0 0 10px 0;
             color: var(--header-color);
+            transition: color 0.3s;
         }
 
         #wordFilter {
             width: 100%;
             padding: 8px;
-            border: 1px solid #ccc;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            color: var(--text-color);
             border-radius: 4px;
             box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
         }
 
         #wordIndex {
@@ -90,16 +118,21 @@
             overflow-y: auto;
             flex-grow: 1;
         }
+        
+        #wordIndex.loading {
+            opacity: 0.5;
+            pointer-events: none;
+        }
 
         #wordIndex li {
             padding: 10px 15px;
             cursor: pointer;
-            border-bottom: 1px solid #f0f0f0;
-            transition: background-color 0.2s;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.2s, border-color 0.3s;
         }
 
         #wordIndex li:hover {
-            background-color: #eaf2f8;
+            background-color: var(--hover-bg);
         }
         
         #wordIndex li.active {
@@ -107,12 +140,16 @@
             color: white;
             font-weight: bold;
         }
+         #wordIndex li.active:hover {
+            background-color: var(--link-hover);
+        }
 
         main {
             flex-grow: 1;
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            position: relative;
         }
         
         .header-controls {
@@ -122,11 +159,27 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: background-color 0.3s, border-color 0.3s;
+            flex-shrink: 0;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         #status {
             font-style: italic;
-            color: #555;
+        }
+        
+        #themeToggle {
+             background: none;
+             border: 1px solid var(--border-color);
+             color: var(--text-color);
+             padding: 5px 10px;
+             cursor: pointer;
+             border-radius: 4px;
         }
         
         #downloadBtn {
@@ -144,12 +197,41 @@
         button.hidden {
             display: none;
         }
+        
+        .loader-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--loader-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.3s;
+        }
+
+        .loader {
+            border: 5px solid var(--bg-color);
+            border-top: 5px solid var(--loader-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
         .results-container {
             flex-grow: 1;
             overflow-y: auto;
             padding: var(--page-margin);
-            background: #fdfdfd;
+            background: var(--bg-color);
+            transition: background-color 0.3s;
         }
         
         .placeholder {
@@ -157,7 +239,6 @@
             justify-content: center;
             align-items: center;
             height: 100%;
-            color: #888;
             font-size: 1.2em;
         }
 
@@ -203,8 +284,12 @@
     </aside>
 
     <main>
+        <div class="loader-overlay" style="display: none;"><div class="loader"></div></div>
         <div class="header-controls">
-            <div id="status">Loading data...</div>
+            <div class="header-left">
+                <div id="status">Loading data...</div>
+                <button id="themeToggle">Toggle Theme</button>
+            </div>
             <button id="downloadBtn" class="hidden">Download as CSV</button>
         </div>
         <div class="results-container" id="resultsContainer">
@@ -217,6 +302,8 @@
             let verbsData = null;
             let prefixesData = null;
             let suffixesData = null;
+            let memePrefixes = null;
+            let memeSuffixes = null;
             let lastResults = [];
             let allBaseWords = [];
 
@@ -225,11 +312,14 @@
             const resultsContainer = document.getElementById('resultsContainer');
             const wordIndex = document.getElementById('wordIndex');
             const wordFilter = document.getElementById('wordFilter');
+            const themeToggle = document.getElementById('themeToggle');
+            const loaderOverlay = document.querySelector('.loader-overlay');
 
             const DATA_URLS = {
                 verbs: 'https://raw.githubusercontent.com/andylehti/morphologicon/main/build/verbFullList.csv',
                 prefixes: 'https://raw.githubusercontent.com/andylehti/morphologicon/main/build/prefixes.csv',
-                suffixes: 'https://raw.githubusercontent.com/andylehti/morphologicon/main/build/completeSuffixes.csv'
+                suffixes: 'https://raw.githubusercontent.com/andylehti/morphologicon/main/build/completeSuffixes.csv',
+                morphmemes: 'https://raw.githubusercontent.com/andylehti/morphologicon/main/build/morphmemes.json'
             };
 
             const updateStatus = (message, isError = false) => {
@@ -237,7 +327,7 @@
                 statusDiv.style.color = isError ? '#e74c3c' : '#555';
             };
             
-            async function fetchData(url) {
+            async function fetchCSV(url) {
                 const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
@@ -254,14 +344,23 @@
                     });
                 });
             }
+
+            async function fetchJSON(url) {
+                const response = await fetch(url);
+                 if (!response.ok) {
+                    throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
+                }
+                return await response.json();
+            }
             
             async function initialize() {
                 try {
+                    loaderOverlay.style.display = 'flex';
                     updateStatus('Fetching verb list...');
-                    verbsData = await fetchData(DATA_URLS.verbs);
+                    verbsData = await fetchCSV(DATA_URLS.verbs);
                     
                     updateStatus('Fetching prefixes...');
-                    const rawPrefixes = await fetchData(DATA_URLS.prefixes);
+                    const rawPrefixes = await fetchCSV(DATA_URLS.prefixes);
                     const seen = new Set();
                     prefixesData = rawPrefixes.filter(item => {
                         const isDuplicate = seen.has(item.prefix);
@@ -270,13 +369,20 @@
                     });
 
                     updateStatus('Fetching suffixes...');
-                    const rawSuffixes = await fetchData(DATA_URLS.suffixes);
+                    const rawSuffixes = await fetchCSV(DATA_URLS.suffixes);
                     suffixesData = ensureLinkersColumn(rawSuffixes);
+
+                    updateStatus('Fetching definition templates...');
+                    const memesData = await fetchJSON(DATA_URLS.morphmemes);
+                    memePrefixes = memesData.prefixes;
+                    memeSuffixes = memesData.suffixes;
 
                     populateWordIndex();
                     updateStatus('Data loaded. Select a word.');
                 } catch (error) {
                     updateStatus(`Error initializing: ${error.message}`, true);
+                } finally {
+                    loaderOverlay.style.display = 'none';
                 }
             }
             
@@ -301,7 +407,6 @@
                 if(e.target && e.target.tagName === 'LI') {
                     const baseWord = e.target.dataset.word;
                     
-                    // Update active class
                     const currentActive = wordIndex.querySelector('.active');
                     if(currentActive) currentActive.classList.remove('active');
                     e.target.classList.add('active');
@@ -311,7 +416,7 @@
             });
 
 
-            // --- Linker Sweep and Normalization (from previous version) ---
+            // --- Linker Sweep and Normalization ---
             const VOWELS = new Set("aeiou");
             const _looksLikeLinkerColumn = (columnName, data) => {
                 const name = columnName.toLowerCase();
@@ -348,73 +453,129 @@
                 return data;
             };
 
-            // --- Morph Engine (from previous version) ---
+            // --- Morph Engine ---
             const ASSIMILATION_RULES = { "in-": { "r": "ir-", "l": "il-", "b": "im-", "p": "im-", "m": "im-" }, "ad-": { "c": "ac-", "q": "ac-", "f": "af-", "g": "ag-", "l": "al-", "n": "an-", "p": "ap-", "r": "ar-", "s": "as-", "t": "at-" }, "sub-": { "c": "suc-", "f": "suf-", "p": "sup-", "r": "sur-", "s": "sus-" }, "ex-": { "f": "ef-" }, "en-": { "b": "em-", "p": "em-" }, "co-": { "b": "com-", "p": "com-", "m": "com-", "r": "cor-" }, };
             const assimilate = (prefix_key, stem) => { if (!stem) return prefix_key; const first_char = stem[0].toLowerCase(); if (prefix_key === "a-" && VOWELS.has(first_char)) return "an-"; if (prefix_key === "ex-" && VOWELS.has(first_char)) return "e-"; if (prefix_key === "co-" && !"bpmr".includes(first_char)) return "con-"; if (ASSIMILATION_RULES[prefix_key]) { return ASSIMILATION_RULES[prefix_key][first_char] || prefix_key; } return prefix_key; };
             const join = (prefix_surface, stem) => { const core = prefix_surface.endsWith('-') ? prefix_surface.slice(0, -1) : prefix_surface; if (!core || !stem) return core + (stem || ''); const coreLast = core.slice(-1).toLowerCase(); const stemFirst = stem[0].toLowerCase(); if (coreLast === stemFirst) return core + stem.slice(1); if (VOWELS.has(coreLast) && VOWELS.has(stemFirst)) return core.slice(0, -1) + stem; return core + stem; };
             const assemble_prefix = (prefix_key, stem) => join(assimilate(prefix_key, stem), stem);
             const naive_inflect = (base) => { if (base.endsWith("e") && base !== "be") { return { base: base, present: base.slice(0, -1) + "ing", past: base + "d", participle: base + "d", adjective: base + "able" }; } return { base: base, present: base + "ing", past: base + "ed", participle: base + "ed", adjective: base + "able" }; };
-            const instantiate_table_def = (template, forms) => { let t = String(template || "").trim(); const repl = { base: forms.base || "", present: forms.present || "", past: forms.past || "", adjective: forms.adjective || "", plural: (forms.base || "") + "s" }; for (const [key, value] of Object.entries(repl)) { t = t.replace(new RegExp(`{${key}}`, 'g'), value); } return t ? t.trim().replace(/\.$/, "") + "." : ""; };
-            const render_dynamic = (suffix_row_def, forms) => { if (suffix_row_def && suffix_row_def.trim()) { return instantiate_table_def(suffix_row_def, forms); } return `An act or state related to ${forms.present}.`; };
             
+            // --- Definition Logic ---
+            const instantiateOriginalDefinition = (template, forms) => {
+                let t = String(template || "").trim();
+                if (!t) return `An act or state related to ${forms.present}.`;
+
+                const repl = { base: forms.base || "", present: forms.present || "", past: forms.past || "", adjective: forms.adjective || "", plural: (forms.base || "") + "s" };
+                for (const [key, value] of Object.entries(repl)) {
+                    t = t.replace(new RegExp(`{${key}}`, 'g'), value);
+                }
+                return t ? t.trim().replace(/\.$/, "") + "." : "";
+            };
+
+            const generateMemeDefinition = (prefixKey, suffixKey, forms) => {
+                const fullSuffixKey = `-${suffixKey}`;
+                const prefixData = memePrefixes ? memePrefixes[prefixKey] : null;
+                const suffixData = memeSuffixes ? memeSuffixes[fullSuffixKey] : null;
+
+                if (!suffixData || !suffixData.definition_template) {
+                    return null;
+                }
+
+                const modifier = (prefixData && prefixData.modifier_phrase) ? prefixData.modifier_phrase : "";
+                let definition = suffixData.definition_template;
+
+                for (const formName in forms) {
+                    const placeholder = `{${formName}}`;
+                    const modifiedForm = modifier ? `${modifier} ${forms[formName]}` : forms[formName];
+                    definition = definition.replace(new RegExp(placeholder, 'g'), modifiedForm);
+                }
+                
+                if (definition) {
+                    definition = definition.charAt(0).toUpperCase() + definition.slice(1);
+                    if (!definition.endsWith('.')) definition += '.';
+                }
+
+                return definition;
+            };
+
             // --- Generation and Display Logic ---
             const generateAndDisplay = (base) => {
                 if (!base) return;
+
+                loaderOverlay.style.display = 'flex';
+                wordIndex.classList.add('loading');
                 updateStatus(`Generating forms for "${base}"...`);
                 
-                const verbsLookup = verbsData.reduce((acc, row) => { if (row.base) acc[row.base.toLowerCase()] = row; return acc; }, {});
-                const all_rows = [];
-                const bucket = new Map();
-                const forms = verbsLookup[base.toLowerCase()] || naive_inflect(base);
-                if (!forms.present) forms.present = naive_inflect(base).present;
+                // Use a short timeout to allow the UI to update before the heavy computation starts
+                setTimeout(() => {
+                    try {
+                        const verbsLookup = verbsData.reduce((acc, row) => { if (row.base) acc[row.base.toLowerCase()] = row; return acc; }, {});
+                        const all_rows = [];
+                        const bucket = new Map();
+                        const forms = verbsLookup[base.toLowerCase()] || naive_inflect(base);
+                        if (!forms.present) forms.present = naive_inflect(base).present;
 
-                for (const srow of suffixesData) {
-                    const suf = srow.suffix || "";
-                    const prex_tokens = (srow.prex || "").split(' ').filter(Boolean);
-                    if (prex_tokens.length === 0) prex_tokens.push("");
-                    const linkers = (srow.linkers || "").split(' ');
-                    const row_def = srow.definition || "";
-                    const pog = srow.part_of_grammar || "";
-                    for (const px of prex_tokens) {
-                        const stem = forms.base + px;
-                        for (const pref_row of prefixesData) {
-                            const pref_key = pref_row.prefix;
-                            if (!pref_key) continue;
-                            const fam = pref_row.alias_of || pref_key;
-                            const definition = render_dynamic(row_def, forms);
-                            const variants = new Set();
-                            for (const L of linkers) {
-                                variants.add(assemble_prefix(pref_key, stem) + (L + suf));
+                        for (const srow of suffixesData) {
+                            const suf = srow.suffix || "";
+                            const prex_tokens = (srow.prex || "").split(' ').filter(Boolean);
+                            if (prex_tokens.length === 0) prex_tokens.push("");
+                            const linkers = (srow.linkers || "").split(' ');
+                            const pog = srow.part_of_grammar || "";
+                            for (const px of prex_tokens) {
+                                const stem = forms.base + px;
+                                for (const pref_row of prefixesData) {
+                                    const pref_key = pref_row.prefix;
+                                    if (!pref_key) continue;
+                                    const fam = pref_row.alias_of || pref_key;
+                                    
+                                    let definition = generateMemeDefinition(fam, suf, forms);
+                                    // Fallback to original definition logic
+                                    if (!definition) {
+                                        definition = instantiateOriginalDefinition(srow.definition, forms);
+                                    }
+
+                                    const variants = new Set();
+                                    for (const L of linkers) {
+                                        variants.add(assemble_prefix(pref_key, stem) + (L + suf));
+                                    }
+                                    const concept_key = [fam, suf, px, pog, definition].join('||');
+                                    if (!bucket.has(concept_key)) {
+                                        bucket.set(concept_key, {
+                                            forms: new Set(),
+                                            meta: { part_of_grammar: pog, prefix_family: fam, prefix_input_example: pref_key, prex: px, suffix: suf, definition: definition, ...forms }
+                                        });
+                                    }
+                                    variants.forEach(v => bucket.get(concept_key).forms.add(v));
+                                }
                             }
-                            const concept_key = [fam, suf, px, pog, definition].join('||');
-                            if (!bucket.has(concept_key)) {
-                                bucket.set(concept_key, {
-                                    forms: new Set(),
-                                    meta: { part_of_grammar: pog, prefix_family: fam, prefix_input_example: pref_key, prex: px, suffix: suf, definition: definition, ...forms }
-                                });
-                            }
-                            variants.forEach(v => bucket.get(concept_key).forms.add(v));
                         }
-                    }
-                }
 
-                for (const value of bucket.values()) {
-                    const formList = Array.from(value.forms).sort((a, b) => a.length - b.length);
-                    if (formList.length > 0) {
-                        all_rows.push({ form: formList[0], aka_forms: formList.slice(1).join(', '), ...value.meta });
-                    }
-                }
+                        for (const value of bucket.values()) {
+                            const formList = Array.from(value.forms).sort((a, b) => a.length - b.length);
+                            if (formList.length > 0) {
+                                all_rows.push({ form: formList[0], aka_forms: formList.slice(1).join(', '), ...value.meta });
+                            }
+                        }
 
-                lastResults = all_rows.sort((a, b) => a.form.localeCompare(b.form));
-                displayPrintLayout(lastResults, base);
+                        lastResults = all_rows.sort((a, b) => a.form.localeCompare(b.form));
+                        displayPrintLayout(lastResults, base);
+
+                    } catch (error) {
+                        updateStatus(`Error during generation: ${error.message}`, true);
+                        resultsContainer.innerHTML = '<div class="placeholder">An error occurred.</div>';
+                    } finally {
+                        loaderOverlay.style.display = 'none';
+                        wordIndex.classList.remove('loading');
+                    }
+                }, 10);
             };
 
             const escapeHtml = (unsafe) => unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 
             const displayPrintLayout = (rows, base) => {
                 if (rows.length === 0) {
-                    resultsContainer.innerHTML = '<div class="placeholder">No forms generated for this word.</div>';
-                    updateStatus(`No forms found for "${base}".`);
+                    resultsContainer.innerHTML = '<div class="placeholder">No definitions could be generated for this word.</div>';
+                    updateStatus(`No definitions found for "${base}".`);
                     downloadBtn.classList.add('hidden');
                     return;
                 }
@@ -462,6 +623,21 @@
             };
 
             downloadBtn.addEventListener('click', downloadCSV);
+
+            // --- Theme Toggle Logic ---
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                if (document.body.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    localStorage.removeItem('theme');
+                }
+            });
+
+            // Apply saved theme on load
+            if (localStorage.getItem('theme') === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
 
             // Start the application
             initialize();
