@@ -1,0 +1,2178 @@
+{
+  "prefixes": {
+    "a-": {
+      "category": "Polarity",
+      "modifier_phrase": "not"
+    },
+    "afro-": {
+      "category": "Domain",
+      "modifier_phrase": "African"
+    },
+    "after-": {
+      "category": "Orientation",
+      "modifier_phrase": "later"
+    },
+    "ambi-": {
+      "category": "Scale",
+      "modifier_phrase": "dual"
+    },
+    "amphi-": {
+      "category": "Orientation",
+      "modifier_phrase": "both-sided"
+    },
+    "an-": {
+      "category": "Polarity",
+      "modifier_phrase": "without"
+    },
+    "ana-": {
+      "category": "Orientation",
+      "modifier_phrase": "again"
+    },
+    "anglo-": {
+      "category": "Domain",
+      "modifier_phrase": "English"
+    },
+    "ante-": {
+      "category": "Orientation",
+      "modifier_phrase": "before"
+    },
+    "anti-": {
+      "category": "Polarity",
+      "modifier_phrase": "opposing"
+    },
+    "ap-": {
+      "category": "Orientation",
+      "modifier_phrase": "toward"
+    },
+    "apo-": {
+      "category": "Orientation",
+      "modifier_phrase": "away-from"
+    },
+    "arch-": {
+      "category": "Scale",
+      "modifier_phrase": "prime"
+    },
+    "astro-": {
+      "category": "Domain",
+      "modifier_phrase": "stellar"
+    },
+    "auto-": {
+      "category": "Domain",
+      "modifier_phrase": "self-"
+    },
+    "back-": {
+      "category": "Orientation",
+      "modifier_phrase": "backward"
+    },
+    "be-": {
+      "category": "Domain",
+      "modifier_phrase": "causative"
+    },
+    "bene-": {
+      "category": "Polarity",
+      "modifier_phrase": "well"
+    },
+    "bi-": {
+      "category": "Scale",
+      "modifier_phrase": "two-part"
+    },
+    "bio-": {
+      "category": "Domain",
+      "modifier_phrase": "life-related"
+    },
+    "by-": {
+      "category": "Orientation",
+      "modifier_phrase": "secondary"
+    },
+    "circum-": {
+      "category": "Orientation",
+      "modifier_phrase": "surrounding"
+    },
+    "cis-": {
+      "category": "Orientation",
+      "modifier_phrase": "this-side"
+    },
+    "co-": {
+      "category": "Orientation",
+      "modifier_phrase": "jointly"
+    },
+    "col-": {
+      "category": "Orientation",
+      "modifier_phrase": "jointly"
+    },
+    "com-": {
+      "category": "Orientation",
+      "modifier_phrase": "jointly"
+    },
+    "con-": {
+      "category": "Orientation",
+      "modifier_phrase": "jointly"
+    },
+    "contra-": {
+      "category": "Polarity",
+      "modifier_phrase": "counter-"
+    },
+    "contro-": {
+      "category": "Polarity",
+      "modifier_phrase": "counter-"
+    },
+    "cor-": {
+      "category": "Orientation",
+      "modifier_phrase": "jointly"
+    },
+    "counter-": {
+      "category": "Polarity",
+      "modifier_phrase": "counter-"
+    },
+    "cryo-": {
+      "category": "Domain",
+      "modifier_phrase": "cold"
+    },
+    "crypt-": {
+      "category": "Domain",
+      "modifier_phrase": "hidden"
+    },
+    "crypto-": {
+      "category": "Domain",
+      "modifier_phrase": "secret"
+    },
+    "de-": {
+      "category": "Polarity",
+      "modifier_phrase": "reverse"
+    },
+    "demi-": {
+      "category": "Scale",
+      "modifier_phrase": "half-"
+    },
+    "demo-": {
+      "category": "Domain",
+      "modifier_phrase": "people-related"
+    },
+    "deuter-": {
+      "category": "Scale",
+      "modifier_phrase": "second"
+    },
+    "di-": {
+      "category": "Scale",
+      "modifier_phrase": "double"
+    },
+    "dia-": {
+      "category": "Orientation",
+      "modifier_phrase": "through"
+    },
+    "dif-": {
+      "category": "Polarity",
+      "modifier_phrase": "apart"
+    },
+    "dis-": {
+      "category": "Polarity",
+      "modifier_phrase": "not"
+    },
+    "down-": {
+      "category": "Orientation",
+      "modifier_phrase": "downward"
+    },
+    "du-": {
+      "category": "Scale",
+      "modifier_phrase": "twofold"
+    },
+    "duo-": {
+      "category": "Scale",
+      "modifier_phrase": "twofold"
+    },
+    "dys-": {
+      "category": "Polarity",
+      "modifier_phrase": "badly"
+    },
+    "e-": {
+      "category": "Orientation",
+      "modifier_phrase": "outward"
+    },
+    "eco-": {
+      "category": "Domain",
+      "modifier_phrase": "environmental"
+    },
+    "el-": {
+      "category": "Orientation",
+      "modifier_phrase": "outward"
+    },
+    "electro-": {
+      "category": "Domain",
+      "modifier_phrase": "electric"
+    },
+    "em-": {
+      "category": "Orientation",
+      "modifier_phrase": "inward"
+    },
+    "en-": {
+      "category": "Orientation",
+      "modifier_phrase": "inward"
+    },
+    "ep-": {
+      "category": "Orientation",
+      "modifier_phrase": "upon"
+    },
+    "epi-": {
+      "category": "Orientation",
+      "modifier_phrase": "on-top"
+    },
+    "eu-": {
+      "category": "Polarity",
+      "modifier_phrase": "good"
+    },
+    "euro-": {
+      "category": "Domain",
+      "modifier_phrase": "European"
+    },
+    "ex-": {
+      "category": "Orientation",
+      "modifier_phrase": "former"
+    },
+    "extra-": {
+      "category": "Orientation",
+      "modifier_phrase": "beyond"
+    },
+    "fore-": {
+      "category": "Orientation",
+      "modifier_phrase": "earlier"
+    },
+    "franco-": {
+      "category": "Domain",
+      "modifier_phrase": "French"
+    },
+    "gain-": {
+      "category": "Polarity",
+      "modifier_phrase": "against"
+    },
+    "geo-": {
+      "category": "Domain",
+      "modifier_phrase": "earth-related"
+    },
+    "gyro-": {
+      "category": "Domain",
+      "modifier_phrase": "spinning"
+    },
+    "hemi-": {
+      "category": "Scale",
+      "modifier_phrase": "half-"
+    },
+    "hetero-": {
+      "category": "Polarity",
+      "modifier_phrase": "different"
+    },
+    "hind-": {
+      "category": "Orientation",
+      "modifier_phrase": "rearward"
+    },
+    "hispano-": {
+      "category": "Domain",
+      "modifier_phrase": "Hispanic"
+    },
+    "homo-": {
+      "category": "Polarity",
+      "modifier_phrase": "same-"
+    },
+    "hydro-": {
+      "category": "Domain",
+      "modifier_phrase": "water-related"
+    },
+    "hyper-": {
+      "category": "Scale",
+      "modifier_phrase": "excessively"
+    },
+    "hypo-": {
+      "category": "Scale",
+      "modifier_phrase": "insufficiently"
+    },
+    "ideo-": {
+      "category": "Domain",
+      "modifier_phrase": "idea-based"
+    },
+    "idio-": {
+      "category": "Domain",
+      "modifier_phrase": "personal"
+    },
+    "il-": {
+      "category": "Polarity",
+      "modifier_phrase": "not"
+    },
+    "im-": {
+      "category": "Polarity",
+      "modifier_phrase": "not"
+    },
+    "in-": {
+      "category": "Orientation",
+      "modifier_phrase": "inward"
+    },
+    "indo-": {
+      "category": "Domain",
+      "modifier_phrase": "Indic"
+    },
+    "infra-": {
+      "category": "Orientation",
+      "modifier_phrase": "beneath"
+    },
+    "inter-": {
+      "category": "Orientation",
+      "modifier_phrase": "between"
+    },
+    "intra-": {
+      "category": "Orientation",
+      "modifier_phrase": "within"
+    },
+    "intro-": {
+      "category": "Orientation",
+      "modifier_phrase": "inwardly"
+    },
+    "ir-": {
+      "category": "Polarity",
+      "modifier_phrase": "not"
+    },
+    "iso-": {
+      "category": "Scale",
+      "modifier_phrase": "equal"
+    },
+    "italo-": {
+      "category": "Domain",
+      "modifier_phrase": "Italian"
+    },
+    "macro-": {
+      "category": "Scale",
+      "modifier_phrase": "large-scale"
+    },
+    "magni-": {
+      "category": "Scale",
+      "modifier_phrase": "greatly"
+    },
+    "mal-": {
+      "category": "Polarity",
+      "modifier_phrase": "badly"
+    },
+    "maxi-": {
+      "category": "Scale",
+      "modifier_phrase": "maximally"
+    },
+    "medium-": {
+      "category": "Scale",
+      "modifier_phrase": "mid-level"
+    },
+    "mega-": {
+      "category": "Scale",
+      "modifier_phrase": "huge"
+    },
+    "megalo-": {
+      "category": "Scale",
+      "modifier_phrase": "grandiose"
+    },
+    "meso-": {
+      "category": "Scale",
+      "modifier_phrase": "middle"
+    },
+    "meta-": {
+      "category": "Orientation",
+      "modifier_phrase": "beyond"
+    },
+    "micro-": {
+      "category": "Scale",
+      "modifier_phrase": "small-scale"
+    },
+    "mid-": {
+      "category": "Scale",
+      "modifier_phrase": "middle"
+    },
+    "midi-": {
+      "category": "Scale",
+      "modifier_phrase": "mid-size"
+    },
+    "mini-": {
+      "category": "Scale",
+      "modifier_phrase": "miniature"
+    },
+    "mis-": {
+      "category": "Polarity",
+      "modifier_phrase": "wrongly"
+    },
+    "mon-": {
+      "category": "Scale",
+      "modifier_phrase": "single"
+    },
+    "mono-": {
+      "category": "Scale",
+      "modifier_phrase": "single"
+    },
+    "mult-": {
+      "category": "Scale",
+      "modifier_phrase": "many-"
+    },
+    "multi-": {
+      "category": "Scale",
+      "modifier_phrase": "multiple"
+    },
+    "neo-": {
+      "category": "Scale",
+      "modifier_phrase": "new"
+    },
+    "non-": {
+      "category": "Polarity",
+      "modifier_phrase": "not"
+    },
+    "ob-": {
+      "category": "Orientation",
+      "modifier_phrase": "toward"
+    },
+    "off-": {
+      "category": "Orientation",
+      "modifier_phrase": "off"
+    },
+    "omni-": {
+      "category": "Scale",
+      "modifier_phrase": "all-"
+    },
+    "on-": {
+      "category": "Orientation",
+      "modifier_phrase": "on"
+    },
+    "ortho-": {
+      "category": "Polarity",
+      "modifier_phrase": "correctly"
+    },
+    "out-": {
+      "category": "Orientation",
+      "modifier_phrase": "outside"
+    },
+    "over-": {
+      "category": "Scale",
+      "modifier_phrase": "over"
+    },
+    "paleo-": {
+      "category": "Scale",
+      "modifier_phrase": "ancient"
+    },
+    "pan-": {
+      "category": "Scale",
+      "modifier_phrase": "all-"
+    },
+    "para-": {
+      "category": "Orientation",
+      "modifier_phrase": "alongside"
+    },
+    "ped-": {
+      "category": "Domain",
+      "modifier_phrase": "foot-related"
+    },
+    "pen-": {
+      "category": "Scale",
+      "modifier_phrase": "almost"
+    },
+    "per-": {
+      "category": "Orientation",
+      "modifier_phrase": "thoroughly"
+    },
+    "peri-": {
+      "category": "Orientation",
+      "modifier_phrase": "around"
+    },
+    "photo-": {
+      "category": "Domain",
+      "modifier_phrase": "light-related"
+    },
+    "pleo-": {
+      "category": "Scale",
+      "modifier_phrase": "more"
+    },
+    "pod-": {
+      "category": "Domain",
+      "modifier_phrase": "foot-related"
+    },
+    "poly-": {
+      "category": "Scale",
+      "modifier_phrase": "many-"
+    },
+    "post-": {
+      "category": "Orientation",
+      "modifier_phrase": "after"
+    },
+    "pre-": {
+      "category": "Orientation",
+      "modifier_phrase": "before"
+    },
+    "preter-": {
+      "category": "Orientation",
+      "modifier_phrase": "past"
+    },
+    "pro-": {
+      "category": "Polarity",
+      "modifier_phrase": "for"
+    },
+    "pros-": {
+      "category": "Orientation",
+      "modifier_phrase": "toward"
+    },
+    "proto-": {
+      "category": "Scale",
+      "modifier_phrase": "first"
+    },
+    "pseudo-": {
+      "category": "Polarity",
+      "modifier_phrase": "falsely"
+    },
+    "pyro-": {
+      "category": "Domain",
+      "modifier_phrase": "fire-related"
+    },
+    "quadri-": {
+      "category": "Scale",
+      "modifier_phrase": "fourfold"
+    },
+    "quasi-": {
+      "category": "Polarity",
+      "modifier_phrase": "seemingly"
+    },
+    "retro-": {
+      "category": "Orientation",
+      "modifier_phrase": "backward"
+    },
+    "self-": {
+      "category": "Domain",
+      "modifier_phrase": "self-"
+    },
+    "semi-": {
+      "category": "Scale",
+      "modifier_phrase": "half-"
+    },
+    "socio-": {
+      "category": "Domain",
+      "modifier_phrase": "societal"
+    },
+    "step-": {
+      "category": "Domain",
+      "modifier_phrase": "proxy"
+    },
+    "sub-": {
+      "category": "Orientation",
+      "modifier_phrase": "under"
+    },
+    "sup-": {
+      "category": "Orientation",
+      "modifier_phrase": "under"
+    },
+    "super-": {
+      "category": "Scale",
+      "modifier_phrase": "above"
+    },
+    "supra-": {
+      "category": "Orientation",
+      "modifier_phrase": "above"
+    },
+    "sur-": {
+      "category": "Orientation",
+      "modifier_phrase": "extra"
+    },
+    "sy-": {
+      "category": "Orientation",
+      "modifier_phrase": "together"
+    },
+    "syl-": {
+      "category": "Orientation",
+      "modifier_phrase": "together"
+    },
+    "sym-": {
+      "category": "Orientation",
+      "modifier_phrase": "together"
+    },
+    "syn-": {
+      "category": "Orientation",
+      "modifier_phrase": "together"
+    },
+    "tele-": {
+      "category": "Orientation",
+      "modifier_phrase": "distant"
+    },
+    "trans-": {
+      "category": "Orientation",
+      "modifier_phrase": "across"
+    },
+    "tri-": {
+      "category": "Scale",
+      "modifier_phrase": "triple"
+    },
+    "twi-": {
+      "category": "Scale",
+      "modifier_phrase": "twofold"
+    },
+    "ultra-": {
+      "category": "Scale",
+      "modifier_phrase": "extremely"
+    },
+    "umbe-": {
+      "category": "Orientation",
+      "modifier_phrase": "around (archaic)"
+    },
+    "un-": {
+      "category": "Polarity",
+      "modifier_phrase": "not"
+    },
+    "under-": {
+      "category": "Orientation",
+      "modifier_phrase": "insufficiently"
+    },
+    "uni-": {
+      "category": "Scale",
+      "modifier_phrase": "single"
+    },
+    "up-": {
+      "category": "Orientation",
+      "modifier_phrase": "upward"
+    }
+  },
+  "suffixes": {
+    "-abad": {
+      "part_of_speech": "adjective/noun",
+      "definition_template": "Excessively devoted to {present}, obsessed with {present}"
+    },
+    "-ability": {
+      "part_of_speech": "noun",
+      "definition_template": "The quality of being {adjective}, suitability for {present}"
+    },
+    "-able": {
+      "part_of_speech": "adjective",
+      "definition_template": "Capable of being {past}, suitable for {present}"
+    },
+    "-ably": {
+      "part_of_speech": "adverb",
+      "definition_template": "In a manner that can be {past}, suitable for being {past}"
+    },
+    "-aboo": {
+      "part_of_speech": "adjective/noun",
+      "definition_template": "Related to {base} in a playful or childish way, a quirky fascination with {base}"
+    },
+    "-ac": {
+      "part_of_speech": "adjective",
+      "definition_template": "Related to or characteristic of {base}"
+    },
+    "-acean": {
+      "part_of_speech": "noun",
+      "definition_template": "Belonging to the class of {base}, related to {base}"
+    },
+    "-aceous": {
+      "part_of_speech": "adjective",
+      "definition_template": "Belonging to or resembling of {present}"
+    },
+    "-acious": {
+      "part_of_speech": "adjective",
+      "definition_template": "Characterized by {present}, inclined to {base}"
+    },
+    "-acity": {
+      "part_of_speech": "noun",
+      "definition_template": "Quality of being {past}, inclined to {base}"
+    },
+    "-acy": {
+      "part_of_speech": "noun",
+      "definition_template": "State or quality of being {past} or {adjective}"
+    },
+    "-ad": {
+      "part_of_speech": "adverb",
+      "definition_template": "Toward or in the direction of {base}"
+    },
+    "-ade": {
+      "part_of_speech": "noun",
+      "definition_template": "Result of the action {base}, process of {base}"
+    },
+    "-adelic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Related to a unique or visionary {present}, dreamlike {present}"
+    },
+    "-adic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Related to {present}, having a numerical or systematic characteristic"
+    },
+    "-aemia": {
+      "part_of_speech": "compound noun",
+      "definition_template": "Condition of having {base} in the blood"
+    },
+    "-age": {
+      "part_of_speech": "noun",
+      "definition_template": "Action or process of {present}, result of {present}"
+    },
+    "-ago": {
+      "part_of_speech": "noun",
+      "definition_template": "A state or condition related to {base}, usually negative"
+    },
+    "-agogue": {
+      "part_of_speech": "noun",
+      "definition_template": "Leader or promoter of {base}, bringing about {base}"
+    },
+    "-aholic": {
+      "part_of_speech": "noun",
+      "definition_template": "One who is addicted to {base}, excessive enthusiasm for {base}"
+    },
+    "-al": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to or characterized by {present}"
+    },
+    "-algia": {
+      "part_of_speech": "noun",
+      "definition_template": "Pain associated with {present}, process of {present}"
+    },
+    "-all": {
+      "part_of_speech": "adjective",
+      "definition_template": "Related to or concerning {base}, pertaining to {base}"
+    },
+    "-ally": {
+      "part_of_speech": "adverb",
+      "definition_template": "In a manner of {present}, in relation to {present}"
+    },
+    "-amine": {
+      "part_of_speech": "noun",
+      "definition_template": "Compound derived from {base}, chemical related to {base}"
+    },
+    "-an": {
+      "part_of_speech": "adjective/noun",
+      "definition_template": "Related to {present}, a person associated with {present}"
+    },
+    "-ana": {
+      "part_of_speech": "noun",
+      "definition_template": "Collection of materials or information related to {present}, associated anecdotes or sayings"
+    },
+    "-ance": {
+      "part_of_speech": "noun",
+      "definition_template": "State or quality of being {past} or {adjective}"
+    },
+    "-ancy": {
+      "part_of_speech": "noun",
+      "definition_template": "State or quality of being {past} or {adjective}"
+    },
+    "-androus": {
+      "part_of_speech": "adjective",
+      "definition_template": "Having male characteristics or organs related to {present}, pertaining to {present}"
+    },
+    "-andry": {
+      "part_of_speech": "noun",
+      "definition_template": "State or condition related to male characteristics in {present}, having male organs in {present}"
+    },
+    "-ane": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to or characteristic of {present}, pertaining to {present}"
+    },
+    "-ant": {
+      "part_of_speech": "noun/adjective",
+      "definition_template": "A person who {plural}, a thing that promotes {present}"
+    },
+    "-ar": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to or resembling {present}"
+    },
+    "-arch": {
+      "part_of_speech": "noun",
+      "definition_template": "Ruler or leader in {present}, person of highest authority in {present}"
+    },
+    "-archy": {
+      "part_of_speech": "noun",
+      "definition_template": "Form of government or rule by {present}, related to the system of {present}"
+    },
+    "-ard": {
+      "part_of_speech": "noun",
+      "definition_template": "One characterized by {present}, often pejorative or indicating excess in {present}"
+    },
+    "-arian": {
+      "part_of_speech": "noun/adjective",
+      "definition_template": "A person who advocates {present}, associated with {present}"
+    },
+    "-arium": {
+      "part_of_speech": "noun",
+      "definition_template": "Place or container for {present}, related to {present}"
+    },
+    "-art": {
+      "part_of_speech": "noun",
+      "definition_template": "Skill or technique related to {present}, product or result of {present}"
+    },
+    "-ary": {
+      "part_of_speech": "adjective/noun",
+      "definition_template": "Connected with {present}, a result of {present}"
+    },
+    "-ase": {
+      "part_of_speech": "noun",
+      "definition_template": "Enzyme associated with {present}, catalyst for {present}"
+    },
+    "-aster": {
+      "part_of_speech": "noun",
+      "definition_template": "Inferior or imitation of {present}"
+    },
+    "-ate": {
+      "part_of_speech": "verb/adjective",
+      "definition_template": "To make or become {past}, {adjective}, characterized by {present}"
+    },
+    "-athon": {
+      "part_of_speech": "noun",
+      "definition_template": "Marathon or prolonged event related to {present}, extensive {present}"
+    },
+    "-ation": {
+      "part_of_speech": "noun",
+      "definition_template": "Action or process of {present}"
+    },
+    "-ative": {
+      "part_of_speech": "adjective",
+      "definition_template": "Tending to {present}, having the nature of {present}"
+    },
+    "-ator": {
+      "part_of_speech": "noun",
+      "definition_template": "One who does {present}, agent of {present}"
+    },
+    "-atory": {
+      "part_of_speech": "adjective",
+      "definition_template": "Related to or serving for {present}, intended for {present}"
+    },
+    "-bag": {
+      "part_of_speech": "noun",
+      "definition_template": "Used to insult or describe someone negatively related to being {past}"
+    },
+    "-bait": {
+      "part_of_speech": "noun",
+      "definition_template": "Something used to provoke a reaction related to {present}"
+    },
+    "-biont": {
+      "part_of_speech": "noun",
+      "definition_template": "Organism living in a particular {present}, life form related to {present}"
+    },
+    "-biosis": {
+      "part_of_speech": "noun",
+      "definition_template": "Mode of living or condition of life related to {present}, symbiosis with {present}"
+    },
+    "-blast": {
+      "part_of_speech": "noun",
+      "definition_template": "Embryonic or immature stage of {present}, precursor of {present}"
+    },
+    "-bomb": {
+      "part_of_speech": "noun",
+      "definition_template": "A thing that fails or is terrible related to {present}"
+    },
+    "-boo": {
+      "part_of_speech": "noun/adjective",
+      "definition_template": "Endearingly related to {base}, cute or playful {base}"
+    },
+    "-bot": {
+      "part_of_speech": "noun",
+      "definition_template": "Automated system related to {present}, robot performing {present}"
+    },
+    "-burg": {
+      "part_of_speech": "noun",
+      "definition_template": "Town or fortified place of {present}"
+    },
+    "-cade": {
+      "part_of_speech": "noun",
+      "definition_template": "Procession or parade related to {present}, systematic action of {present}"
+    },
+    "-can": {
+      "part_of_speech": "noun",
+      "definition_template": "Supporter or member of a particular system related to {present}"
+    },
+    "-carpous": {
+      "part_of_speech": "adjective",
+      "definition_template": "Having the fruit or seed of {present}, producing {present}"
+    },
+    "-cele": {
+      "part_of_speech": "noun",
+      "definition_template": "Swelling or hernia related to {present}, protrusion of {present}"
+    },
+    "-cene": {
+      "part_of_speech": "noun",
+      "definition_template": "Relating to a specific period of {present}, era of {present}"
+    },
+    "-centric": {
+      "part_of_speech": "adjective",
+      "definition_template": "Centered or focused on {present}, having a central relation to {present}"
+    },
+    "-cephalous": {
+      "part_of_speech": "adjective",
+      "definition_template": "Having a head or headlike structure in {present}, characteristic of {present}"
+    },
+    "-cephaly": {
+      "part_of_speech": "noun",
+      "definition_template": "Condition of the head or skull related to {present}, form of {present}"
+    },
+    "-ception": {
+      "part_of_speech": "noun",
+      "definition_template": "The act or process of taking the {past}, perception related to {present}"
+    },
+    "-chore": {
+      "part_of_speech": "noun",
+      "definition_template": "Dispersal or spreading mechanism related to {present}, movement of {present}"
+    },
+    "-chory": {
+      "part_of_speech": "noun",
+      "definition_template": "Dispersal by means of {present}, distribution through {present}"
+    },
+    "-cidal": {
+      "part_of_speech": "adjective",
+      "definition_template": "Related to killing the {past}, destructive to the {past}"
+    },
+    "-cide": {
+      "part_of_speech": "noun",
+      "definition_template": "The act of killing {past}"
+    },
+    "-cism": {
+      "part_of_speech": "noun",
+      "definition_template": "A belief system related to {base}, an ideology or practice of {base}"
+    },
+    "-clast": {
+      "part_of_speech": "noun",
+      "definition_template": "Breaker or destroyer of {present}, fragmenter of {present}"
+    },
+    "-clinal": {
+      "part_of_speech": "adjective",
+      "definition_template": "Inclination or gradient related to {present}, having a slope in {present}"
+    },
+    "-cline": {
+      "part_of_speech": "noun",
+      "definition_template": "Gradient or slope related to {present}, inclination in {present}"
+    },
+    "-clinic": {
+      "part_of_speech": "noun/adjective",
+      "definition_template": "Pertaining to medical treatment of {present}, relating to the practice of {present}"
+    },
+    "-coelous": {
+      "part_of_speech": "adjective",
+      "definition_template": "Having a hollow or cavity related to {present}, characteristic of {present}"
+    },
+    "-colous": {
+      "part_of_speech": "adjective",
+      "definition_template": "Inhabiting or dwelling in {present}, living on {present}"
+    },
+    "-con": {
+      "part_of_speech": "noun",
+      "definition_template": "With or together in {base}, a form of {base}"
+    },
+    "-core": {
+      "part_of_speech": "noun",
+      "definition_template": "Style, aesthetic, or subculture centered on {present}"
+    },
+    "-cracy": {
+      "part_of_speech": "noun",
+      "definition_template": "Government by {present}, rule of {present}"
+    },
+    "-crat": {
+      "part_of_speech": "noun",
+      "definition_template": "Supporter or member of a particular system related to {present}"
+    },
+    "-cratic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Pertaining to a form of government by {present}, relating to the system of {present}"
+    },
+    "-crypt": {
+      "part_of_speech": "noun",
+      "definition_template": "Hidden or secret {base}, related to something concealed {base}"
+    },
+    "-cule": {
+      "part_of_speech": "noun",
+      "definition_template": "Small or diminutive form of {present}"
+    },
+    "-cy": {
+      "part_of_speech": "noun",
+      "definition_template": "State or quality of being {past} or {adjective}"
+    },
+    "-cyte": {
+      "part_of_speech": "noun",
+      "definition_template": "A cell related to {present}, associated with {present}"
+    },
+    "-demic": {
+      "part_of_speech": "noun",
+      "definition_template": "Related to widespread occurrence of {present}"
+    },
+    "-dom": {
+      "part_of_speech": "noun",
+      "definition_template": "State of being {past}, domain of {present}"
+    },
+    "-drome": {
+      "part_of_speech": "noun",
+      "definition_template": "A running or occurring with {present}"
+    },
+    "-dromous": {
+      "part_of_speech": "adjective",
+      "definition_template": "Running or moving in a specified way related to {present}, migration of {present}"
+    },
+    "-ean": {
+      "part_of_speech": "adjective/noun",
+      "definition_template": "Relating to or characteristic of {present}, person from {present}"
+    },
+    "-ed": {
+      "part_of_speech": "adjective/verb",
+      "definition_template": "Having the quality of {past} or {adjective}"
+    },
+    "-ee": {
+      "part_of_speech": "noun",
+      "definition_template": "A person who receives the action of {present}"
+    },
+    "-eer": {
+      "part_of_speech": "noun",
+      "definition_template": "Person professionally or habitually engaged in {present}"
+    },
+    "-eers": {
+      "part_of_speech": "noun",
+      "definition_template": "Persons professionally or habitually engaged in {present}"
+    },
+    "-el": {
+      "part_of_speech": "noun",
+      "definition_template": "Diminutive form of {present}"
+    },
+    "-en": {
+      "part_of_speech": "verb/adjective",
+      "definition_template": "To make or become {past}, suitable for {present}"
+    },
+    "-ence": {
+      "part_of_speech": "noun",
+      "definition_template": "State or quality of being {past} or {adjective}"
+    },
+    "-enchyma": {
+      "part_of_speech": "noun",
+      "definition_template": "Tissue related to {base}, cellular composition of {base}"
+    },
+    "-ency": {
+      "part_of_speech": "noun",
+      "definition_template": "State or quality of being {past} or {adjective}"
+    },
+    "-ene": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to or characteristic of {present}, pertaining to {present}"
+    },
+    "-ent": {
+      "part_of_speech": "adjective/noun",
+      "definition_template": "Causing the {present}, being in a state of {present}"
+    },
+    "-eous": {
+      "part_of_speech": "adjective",
+      "definition_template": "Composed of or characterized by {present}"
+    },
+    "-er": {
+      "part_of_speech": "noun",
+      "definition_template": "A person or thing that performs {present}"
+    },
+    "-ergy": {
+      "part_of_speech": "noun",
+      "definition_template": "Work, activity, or process related to {present}, energy involved in {present}"
+    },
+    "-erization": {
+      "part_of_speech": "noun",
+      "definition_template": "The process of becoming {base}, the act of making into {base}"
+    },
+    "-erize": {
+      "part_of_speech": "verb",
+      "definition_template": "To make into {present}, to cause to become {past}"
+    },
+    "-ern": {
+      "part_of_speech": "adjective",
+      "definition_template": "Direction of being {past}, {present}"
+    },
+    "-ery": {
+      "part_of_speech": "noun",
+      "definition_template": "Place related to {base}, the practice or condition of {base}"
+    },
+    "-es": {
+      "part_of_speech": "noun",
+      "definition_template": "Plural form of {present}, multiple instances of {present}"
+    },
+    "-esce": {
+      "part_of_speech": "verb",
+      "definition_template": "To begin to show {present}"
+    },
+    "-escence": {
+      "part_of_speech": "noun",
+      "definition_template": "State or process of becoming {past}, {present}"
+    },
+    "-escent": {
+      "part_of_speech": "adjective",
+      "definition_template": "In the process of becoming {past} or {adjective}"
+    },
+    "-ese": {
+      "part_of_speech": "adjective/noun",
+      "definition_template": "Of {present} origin or style; language/style of {present}"
+    },
+    "-esque": {
+      "part_of_speech": "adjective",
+      "definition_template": "In the style of {present}, related to {present}"
+    },
+    "-ess": {
+      "part_of_speech": "noun",
+      "definition_template": "Female who {plural}, associated with {present}"
+    },
+    "-est": {
+      "part_of_speech": "adjective/adverb",
+      "definition_template": "Most {past}, superlative of {present}"
+    },
+    "-et": {
+      "part_of_speech": "noun",
+      "definition_template": "Diminutive form of {present}, little bit of {present}"
+    },
+    "-etic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Pertaining to or characterized by {present}, relating to the practice of {present}"
+    },
+    "-ette": {
+      "part_of_speech": "noun",
+      "definition_template": "Diminutive form of {present}"
+    },
+    "-ety": {
+      "part_of_speech": "noun",
+      "definition_template": "State or condition of being {base}, related to {base}"
+    },
+    "-eum": {
+      "part_of_speech": "noun",
+      "definition_template": "Place, building, or collection for {present}"
+    },
+    "-facient": {
+      "part_of_speech": "adjective",
+      "definition_template": "Causing or producing {present}, leading to {present}"
+    },
+    "-faction": {
+      "part_of_speech": "noun",
+      "definition_template": "State of making or becoming {present}, the process of {present}"
+    },
+    "-fer": {
+      "part_of_speech": "verb/adjective",
+      "definition_template": "Bearing or carrying {present}"
+    },
+    "-ferous": {
+      "part_of_speech": "adjective",
+      "definition_template": "Bearing or producing {present}"
+    },
+    "-fic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Making or causing {present}, related to the production of {present}"
+    },
+    "-fication": {
+      "part_of_speech": "noun",
+      "definition_template": "The process of making {present}, the result of forming {present}"
+    },
+    "-fold": {
+      "part_of_speech": "adjective",
+      "definition_template": "Times or multiplications of {present}, forming a specified number of {present}"
+    },
+    "-form": {
+      "part_of_speech": "adjective",
+      "definition_template": "In the shape or form of {present}, resembling {present}"
+    },
+    "-friendly": {
+      "part_of_speech": "adjective",
+      "definition_template": "Compatible with or accommodating to {present}"
+    },
+    "-ful": {
+      "part_of_speech": "adjective",
+      "definition_template": "Full of {present}, characterized by {present}"
+    },
+    "-fy": {
+      "part_of_speech": "verb",
+      "definition_template": "To make or cause to become {present}, to transform into {present}"
+    },
+    "-gamy": {
+      "part_of_speech": "noun",
+      "definition_template": "Marriage or union related to {present}"
+    },
+    "-gate": {
+      "part_of_speech": "noun",
+      "definition_template": "Scandal involving {present}"
+    },
+    "-geddon": {
+      "part_of_speech": "noun",
+      "definition_template": "Catastrophic event related to {base}, apocalyptic {base}"
+    },
+    "-gen": {
+      "part_of_speech": "noun",
+      "definition_template": "Something that produces {present}"
+    },
+    "-genesis": {
+      "part_of_speech": "noun",
+      "definition_template": "Origin or formation of {present}, the {present} of {present}"
+    },
+    "-genic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Produced by or producing {present}; suited to {present}"
+    },
+    "-genous": {
+      "part_of_speech": "adjective",
+      "definition_template": "Originating from {present}, produced by {present}"
+    },
+    "-geny": {
+      "part_of_speech": "noun",
+      "definition_template": "The origin of {present}, production of {present}"
+    },
+    "-gnathous": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to the jaw in {present}, having the characteristics of {present}"
+    },
+    "-gon": {
+      "part_of_speech": "noun",
+      "definition_template": "Shape with {base} angles or sides"
+    },
+    "-gonal": {
+      "part_of_speech": "adjective",
+      "definition_template": "Having {base} angles or sides"
+    },
+    "-gonium": {
+      "part_of_speech": "noun",
+      "definition_template": "Reproductive cell or structure related to {base}, a beginning of {base}"
+    },
+    "-grad": {
+      "part_of_speech": "noun",
+      "definition_template": "City or settlement of {present}"
+    },
+    "-gram": {
+      "part_of_speech": "noun",
+      "definition_template": "Record or written mark of {present}"
+    },
+    "-graph": {
+      "part_of_speech": "noun",
+      "definition_template": "Instrument or device for recording {present}, written or visual representation of {present}"
+    },
+    "-grapher": {
+      "part_of_speech": "noun",
+      "definition_template": "One who writes or records {present}, specialist in {present}"
+    },
+    "-graphic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to recording, writing, or visualizing {present}"
+    },
+    "-graphy": {
+      "part_of_speech": "noun",
+      "definition_template": "The process of recording {present}, describing {present}"
+    },
+    "-gyne": {
+      "part_of_speech": "noun",
+      "definition_template": "Relating to females or the female reproductive system in {present}, having female characteristics in {present}"
+    },
+    "-gyny": {
+      "part_of_speech": "noun",
+      "definition_template": "Relating to women or female {present}, female dominance in {present}"
+    },
+    "-head": {
+      "part_of_speech": "noun",
+      "definition_template": "Enthusiast or obsessive of {present}"
+    },
+    "-hedral": {
+      "part_of_speech": "adjective",
+      "definition_template": "Having {base} faces (as a polyhedron)"
+    },
+    "-hedron": {
+      "part_of_speech": "noun",
+      "definition_template": "A solid figure with specified faces relating to {base}"
+    },
+    "-hood": {
+      "part_of_speech": "noun",
+      "definition_template": "State, condition, or quality of being {past} or {adjective}"
+    },
+    "-hound": {
+      "part_of_speech": "noun",
+      "definition_template": "One who avidly pursues {present}"
+    },
+    "-ia": {
+      "part_of_speech": "noun",
+      "definition_template": "State or condition related to {present}, illness or abnormal state of {present}"
+    },
+    "-ial": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to or characterized by {past} or {adjective}"
+    },
+    "-ian": {
+      "part_of_speech": "adjective/noun",
+      "definition_template": "Relating to {present}, a person associated with {present}"
+    },
+    "-iasis": {
+      "part_of_speech": "noun",
+      "definition_template": "A condition or disease caused by {present}, the state of being affected by {present}"
+    },
+    "-iatric": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to medical treatment of {present}, therapeutic care of {present}"
+    },
+    "-iatrics": {
+      "part_of_speech": "noun",
+      "definition_template": "Branch of medicine related to {present}, treatment or science of {present}"
+    },
+    "-iatry": {
+      "part_of_speech": "noun",
+      "definition_template": "Medical treatment related to {present}, healing of the {past}"
+    },
+    "-ible": {
+      "part_of_speech": "adjective",
+      "definition_template": "Capable of being {past}, suitable for {present}"
+    },
+    "-ibly": {
+      "part_of_speech": "adverb",
+      "definition_template": "In a manner capable of being {past}, suitably for being {present}"
+    },
+    "-ic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to or characterized by {present}"
+    },
+    "-ical": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to or characterized by {present}"
+    },
+    "-icity": {
+      "part_of_speech": "noun",
+      "definition_template": "State or quality of being {present}, condition of {present}"
+    },
+    "-ics": {
+      "part_of_speech": "noun",
+      "definition_template": "Study or science of {present}, related to the knowledge of {present}"
+    },
+    "-ide": {
+      "part_of_speech": "noun",
+      "definition_template": "Binary compound or derivative of {present}"
+    },
+    "-idium": {
+      "part_of_speech": "noun",
+      "definition_template": "Diminutive form of {present}"
+    },
+    "-iferous": {
+      "part_of_speech": "adjective",
+      "definition_template": "Producing or bearing {present}, containing {present}"
+    },
+    "-ification": {
+      "part_of_speech": "noun",
+      "definition_template": "The process of making into {past}, the state of becoming {past}"
+    },
+    "-ifier": {
+      "part_of_speech": "noun",
+      "definition_template": "One who makes into {present}, something that converts into {present}"
+    },
+    "-ify": {
+      "part_of_speech": "verb",
+      "definition_template": "To make or cause to become {past}, {adjective}"
+    },
+    "-il": {
+      "part_of_speech": "noun",
+      "definition_template": "Diminutive form of {present}"
+    },
+    "-ile": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to or capable of {present}"
+    },
+    "-illa": {
+      "part_of_speech": "noun",
+      "definition_template": "Diminutive form of {present}"
+    },
+    "-in": {
+      "part_of_speech": "noun",
+      "definition_template": "Substance or protein derived from {present}"
+    },
+    "-ine": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to or characteristic of {present}"
+    },
+    "-ing": {
+      "part_of_speech": "noun/adjective",
+      "definition_template": "The action or process of {present}"
+    },
+    "-ion": {
+      "part_of_speech": "noun",
+      "definition_template": "The action or process of {present}"
+    },
+    "-ious": {
+      "part_of_speech": "adjective",
+      "definition_template": "Full of {present}, characterized by {present}"
+    },
+    "-ise": {
+      "part_of_speech": "verb",
+      "definition_template": "To make or cause to be {past}, to convert into {present}"
+    },
+    "-ish": {
+      "part_of_speech": "adjective",
+      "definition_template": "Having the quality of {present}, somewhat {past}"
+    },
+    "-ism": {
+      "part_of_speech": "noun",
+      "definition_template": "Doctrine of {present}, practice of {present}"
+    },
+    "-ist": {
+      "part_of_speech": "noun",
+      "definition_template": "A person who practices {present}, concerned with {present}"
+    },
+    "-istic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Having the qualities of {adjective}, related to {present}"
+    },
+    "-ite": {
+      "part_of_speech": "noun/adjective",
+      "definition_template": "A person associated with {present}, a mineral derived from {present}"
+    },
+    "-itious": {
+      "part_of_speech": "adjective",
+      "definition_template": "Characterized by or full of {present}, having the nature of {present}"
+    },
+    "-itis": {
+      "part_of_speech": "noun",
+      "definition_template": "Inflammation of {present}"
+    },
+    "-ity": {
+      "part_of_speech": "noun",
+      "definition_template": "State or quality of being {past} or {adjective}"
+    },
+    "-ium": {
+      "part_of_speech": "noun",
+      "definition_template": "Element or cation associated with {present}"
+    },
+    "-ive": {
+      "part_of_speech": "adjective",
+      "definition_template": "Having the nature of {present}, tending to {base}"
+    },
+    "-ization": {
+      "part_of_speech": "noun",
+      "definition_template": "Process of becoming or making {adjective}, action of {present}"
+    },
+    "-ize": {
+      "part_of_speech": "verb",
+      "definition_template": "To make or become {past}, {adjective}"
+    },
+    "-kin": {
+      "part_of_speech": "noun",
+      "definition_template": "Diminutive or familiar form of {present}"
+    },
+    "-kinesis": {
+      "part_of_speech": "noun",
+      "definition_template": "Movement or activity related to {present}"
+    },
+    "-kinetic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to movement or activity of {present}"
+    },
+    "-kinosis": {
+      "part_of_speech": "noun",
+      "definition_template": "Condition of abnormal movement related to {present}"
+    },
+    "-lanche": {
+      "part_of_speech": "noun",
+      "definition_template": "Sudden overwhelming event related to {present}"
+    },
+    "-land": {
+      "part_of_speech": "noun",
+      "definition_template": "Land or region of {present}"
+    },
+    "-latry": {
+      "part_of_speech": "noun",
+      "definition_template": "Worship of {present}, excessive devotion to {present}"
+    },
+    "-lepsy": {
+      "part_of_speech": "noun",
+      "definition_template": "A seizure related to {present}, attack from {present}"
+    },
+    "-less": {
+      "part_of_speech": "adjective",
+      "definition_template": "Without {present}"
+    },
+    "-let": {
+      "part_of_speech": "noun",
+      "definition_template": "Small or diminutive form of {present}"
+    },
+    "-lexia": {
+      "part_of_speech": "noun",
+      "definition_template": "Reading or word-processing ability related to {present}"
+    },
+    "-like": {
+      "part_of_speech": "adjective",
+      "definition_template": "Similar to {present}, resembling {present}"
+    },
+    "-ling": {
+      "part_of_speech": "noun",
+      "definition_template": "Diminutive form of {present}"
+    },
+    "-lite": {
+      "part_of_speech": "noun",
+      "definition_template": "A mineral related to {present}"
+    },
+    "-lith": {
+      "part_of_speech": "noun",
+      "definition_template": "A stone related to {present}"
+    },
+    "-logist": {
+      "part_of_speech": "noun",
+      "definition_template": "A person who studies {present}, expert in {present}"
+    },
+    "-logy": {
+      "part_of_speech": "noun",
+      "definition_template": "The study of {present}, science of {present}"
+    },
+    "-lord": {
+      "part_of_speech": "noun",
+      "definition_template": "A person with authority over {present}, one who rules or controls {present}"
+    },
+    "-ly": {
+      "part_of_speech": "adverb",
+      "definition_template": "In a manner characteristic of {present}"
+    },
+    "-lysis": {
+      "part_of_speech": "noun",
+      "definition_template": "Breakdown or dissolution of {present}"
+    },
+    "-lyte": {
+      "part_of_speech": "noun",
+      "definition_template": "A substance that can be decomposed by {present}"
+    },
+    "-lytic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Causing or relating to the breakdown of {present}"
+    },
+    "-mageddon": {
+      "part_of_speech": "noun",
+      "definition_template": "Apocalyptic event related to {present}, catastrophic {present}"
+    },
+    "-man": {
+      "part_of_speech": "noun",
+      "definition_template": "Male person associated with {present}"
+    },
+    "-mancy": {
+      "part_of_speech": "noun",
+      "definition_template": "Divination related to {present}, prophecy of {present}"
+    },
+    "-matic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Operating related to {present}, process of {present}"
+    },
+    "-megaly": {
+      "part_of_speech": "noun",
+      "definition_template": "Enlargement of {present}"
+    },
+    "-ment": {
+      "part_of_speech": "noun",
+      "definition_template": "The action or result of {present}"
+    },
+    "-meter": {
+      "part_of_speech": "noun",
+      "definition_template": "Measurement related to {present}, measuring of {present}"
+    },
+    "-metric": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to measurement of {present}"
+    },
+    "-metry": {
+      "part_of_speech": "noun",
+      "definition_template": "Measurement related to {present}, measuring of {present}"
+    },
+    "-monger": {
+      "part_of_speech": "noun",
+      "definition_template": "Someone who spreads or promotes {present}"
+    },
+    "-morph": {
+      "part_of_speech": "noun",
+      "definition_template": "Form related to {present}, shape of {present}"
+    },
+    "-morphic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Having a form or shape related to {present}, resembling {present}"
+    },
+    "-morphism": {
+      "part_of_speech": "noun",
+      "definition_template": "Form or structure related to {present}, process of forming {present}"
+    },
+    "-morphous": {
+      "part_of_speech": "adjective",
+      "definition_template": "Having a specific form or shape in {present}, characterized by {present}"
+    },
+    "-nado": {
+      "part_of_speech": "noun",
+      "definition_template": "A destructive force related to {present}, a whirlwind of {present}"
+    },
+    "-nasty": {
+      "part_of_speech": "noun",
+      "definition_template": "Movement or response related to {present}, often in {present}"
+    },
+    "-nator": {
+      "part_of_speech": "verb",
+      "definition_template": "machine or tool for {present}"
+    },
+    "-naut": {
+      "part_of_speech": "noun",
+      "definition_template": "Traveler or explorer of the {base}"
+    },
+    "-ness": {
+      "part_of_speech": "noun",
+      "definition_template": "State or quality of being {past} or {adjective}"
+    },
+    "-netic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Movement related to {present}, motion of {present}"
+    },
+    "-nik": {
+      "part_of_speech": "noun",
+      "definition_template": "Adherent or devotee of {present}"
+    },
+    "-nomic": {
+      "part_of_speech": "noun",
+      "definition_template": "Science or study of {present}, economy of {present}"
+    },
+    "-nomy": {
+      "part_of_speech": "noun",
+      "definition_template": "The system governing {present}, laws of {present}"
+    },
+    "-nut": {
+      "part_of_speech": "noun",
+      "definition_template": "Fanatic for {present}"
+    },
+    "-ode": {
+      "part_of_speech": "noun",
+      "definition_template": "A way related to {present}, path of {present}"
+    },
+    "-odia": {
+      "part_of_speech": "noun",
+      "definition_template": "Strong dislike or aversion to {present}"
+    },
+    "-off": {
+      "part_of_speech": "noun",
+      "definition_template": "A contest or event related to {present}, a separation from {present}"
+    },
+    "-oid": {
+      "part_of_speech": "adjective/noun",
+      "definition_template": "Resembling the {past}, related to {present}"
+    },
+    "-ol": {
+      "part_of_speech": "noun",
+      "definition_template": "Alcohol derived from {present}"
+    },
+    "-oma": {
+      "part_of_speech": "noun",
+      "definition_template": "A tumor related to {present}, growth of {present}"
+    },
+    "-one": {
+      "part_of_speech": "noun",
+      "definition_template": "Ketone or carbonyl compound of {present}"
+    },
+    "-onym": {
+      "part_of_speech": "noun",
+      "definition_template": "A name related to {present}, word of {present}"
+    },
+    "-opia": {
+      "part_of_speech": "noun",
+      "definition_template": "A condition of vision related to {present}"
+    },
+    "-opsy": {
+      "part_of_speech": "noun",
+      "definition_template": "A medical examination of {present}, inspection of {present}"
+    },
+    "-or": {
+      "part_of_speech": "noun",
+      "definition_template": "A person or thing that performs {present}"
+    },
+    "-orium": {
+      "part_of_speech": "noun",
+      "definition_template": "A place associated with {present}, related to {present}"
+    },
+    "-ory": {
+      "part_of_speech": "noun/adjective",
+      "definition_template": "Place or thing related to {present}, pertaining to {present}"
+    },
+    "-ose": {
+      "part_of_speech": "noun/adjective",
+      "definition_template": "Sugar related to {present}; full of {present}"
+    },
+    "-osis": {
+      "part_of_speech": "noun",
+      "definition_template": "An increased or heightened condition related to {present}, increased {present}"
+    },
+    "-otic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to or having the quality of {present}"
+    },
+    "-ous": {
+      "part_of_speech": "adjective",
+      "definition_template": "Full of {present}, characterized by {present}"
+    },
+    "-para": {
+      "part_of_speech": "adjective",
+      "definition_template": "Alongside or beside {present}, similar to or derived from {present}"
+    },
+    "-path": {
+      "part_of_speech": "noun",
+      "definition_template": "One who follows a way related to {present}, practitioner of {present}"
+    },
+    "-pathy": {
+      "part_of_speech": "noun",
+      "definition_template": "A disease related to {present}, disorder of {present}"
+    },
+    "-penia": {
+      "part_of_speech": "noun",
+      "definition_template": "Deficiency of {present}"
+    },
+    "-person": {
+      "part_of_speech": "noun",
+      "definition_template": "Gender-neutral person associated with {present}"
+    },
+    "-pexy": {
+      "part_of_speech": "noun",
+      "definition_template": "Surgical fixation of {present}"
+    },
+    "-phage": {
+      "part_of_speech": "noun",
+      "definition_template": "Something that devours {present}"
+    },
+    "-phagic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Related to eating or consuming the {past}"
+    },
+    "-phagous": {
+      "part_of_speech": "adjective",
+      "definition_template": "Feeding on {present}"
+    },
+    "-phagy": {
+      "part_of_speech": "noun",
+      "definition_template": "The act of eating {present}, consuming {present}"
+    },
+    "-phil": {
+      "part_of_speech": "noun",
+      "definition_template": "Lover of or affinity for {present}, having a strong attraction to {present}"
+    },
+    "-phile": {
+      "part_of_speech": "noun",
+      "definition_template": "Lover of or enthusiast for {present}, person who loves {present}"
+    },
+    "-philia": {
+      "part_of_speech": "noun",
+      "definition_template": "A strong love for {present}, affinity for {present}"
+    },
+    "-philic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Having an affinity for {present}"
+    },
+    "-phobe": {
+      "part_of_speech": "noun",
+      "definition_template": "A person who fears {present}, associated with {present}"
+    },
+    "-phobia": {
+      "part_of_speech": "noun",
+      "definition_template": "An irrational fear of {present}, phobia of {present}"
+    },
+    "-phobic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Having a fear or aversion to {present}, characterized by fear of {present}"
+    },
+    "-phone": {
+      "part_of_speech": "noun",
+      "definition_template": "A device related to sound, speech, {present}"
+    },
+    "-phonia": {
+      "part_of_speech": "noun",
+      "definition_template": "Sound or voice related to {present}, characteristic of {present}"
+    },
+    "-phonic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to sound or voice of {present}"
+    },
+    "-phoria": {
+      "part_of_speech": "noun",
+      "definition_template": "A feeling related to {present}, mental state of {present}"
+    },
+    "-phoric": {
+      "part_of_speech": "noun",
+      "definition_template": "State or condition related to {present}, bearing or producing {present}"
+    },
+    "-phorous": {
+      "part_of_speech": "adjective",
+      "definition_template": "Bearing {present}, carrying {present}"
+    },
+    "-phrenia": {
+      "part_of_speech": "noun",
+      "definition_template": "Condition of the mind related to {present}, mental disorder of {present}"
+    },
+    "-physis": {
+      "part_of_speech": "noun",
+      "definition_template": "Growth or formation of {present}, related to natural development of {present}"
+    },
+    "-phyte": {
+      "part_of_speech": "noun",
+      "definition_template": "A plant resembling {present}, related to {present}"
+    },
+    "-pilled": {
+      "part_of_speech": "adjective",
+      "definition_template": "Influenced by or characteristic of {present}, adhering to the beliefs of {present}"
+    },
+    "-plasia": {
+      "part_of_speech": "noun",
+      "definition_template": "Formation or development related to {present}, growth of {present}"
+    },
+    "-plasm": {
+      "part_of_speech": "noun",
+      "definition_template": "Formed material or substance of {present}"
+    },
+    "-plastic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to forming or molding {present}, capable of being shaped {present}"
+    },
+    "-plasty": {
+      "part_of_speech": "noun",
+      "definition_template": "Surgical repair of {present}, reconstruction of {present}"
+    },
+    "-plegia": {
+      "part_of_speech": "noun",
+      "definition_template": "Paralysis related to {present}, condition of {present}"
+    },
+    "-plexy": {
+      "part_of_speech": "noun",
+      "definition_template": "A stroke related to {present}, seizure of {present}"
+    },
+    "-ploid": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to the number of sets of chromosomes in {present}, chromosome set of {present}"
+    },
+    "-pnea": {
+      "part_of_speech": "noun",
+      "definition_template": "Breathing related to {present}, respiration of {present}"
+    },
+    "-pocalypse": {
+      "part_of_speech": "noun",
+      "definition_template": "Apocalyptic or catastrophic event related to {present}"
+    },
+    "-poiesis": {
+      "part_of_speech": "noun",
+      "definition_template": "Formation or production of {present}"
+    },
+    "-poietic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Forming or producing {present}"
+    },
+    "-polis": {
+      "part_of_speech": "noun",
+      "definition_template": "City of {present}"
+    },
+    "-poo": {
+      "part_of_speech": "noun/adjective",
+      "definition_template": "Informal or playful term related to {present}, something derived from {present}"
+    },
+    "-proof": {
+      "part_of_speech": "adjective",
+      "definition_template": "Resistant to {present}"
+    },
+    "-ptosis": {
+      "part_of_speech": "noun",
+      "definition_template": "Drooping or downward displacement of {present}"
+    },
+    "-punk": {
+      "part_of_speech": "noun",
+      "definition_template": "Genre or aesthetic defined by {present}"
+    },
+    "-quest": {
+      "part_of_speech": "noun",
+      "definition_template": "Long or arduous search for {present}"
+    },
+    "-rix": {
+      "part_of_speech": "noun",
+      "definition_template": "Female agent associated with {present}"
+    },
+    "-rrhage": {
+      "part_of_speech": "noun",
+      "definition_template": "A burst of {present}, breaking forth of {present}"
+    },
+    "-rrhagia": {
+      "part_of_speech": "noun",
+      "definition_template": "Excessive flow or discharge related to {present}, profuse {present}"
+    },
+    "-rrhea": {
+      "part_of_speech": "noun",
+      "definition_template": "A flow related to {present}, discharge of {present}"
+    },
+    "-ry": {
+      "part_of_speech": "noun",
+      "definition_template": "Condition related to {present}, occupation of {present}"
+    },
+    "-saur": {
+      "part_of_speech": "noun",
+      "definition_template": "A lizard related to {present}, reptile of {present}"
+    },
+    "-scape": {
+      "part_of_speech": "noun",
+      "definition_template": "View or scene related to {present}, landscape of {present}"
+    },
+    "-scope": {
+      "part_of_speech": "noun",
+      "definition_template": "Instrument for viewing or observing {present}, device for {present}"
+    },
+    "-scopic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to viewing or examining {present}"
+    },
+    "-scopy": {
+      "part_of_speech": "noun",
+      "definition_template": "The act of observing {present}, examining {present}"
+    },
+    "-script": {
+      "part_of_speech": "noun",
+      "definition_template": "Written text or document related to {present}, act of writing {present}"
+    },
+    "-se": {
+      "part_of_speech": "noun",
+      "definition_template": "A form of {present}, a variant or version of {present}"
+    },
+    "-sect": {
+      "part_of_speech": "noun",
+      "definition_template": "To cut or divide {present}, the cross-section or examination of {present}"
+    },
+    "-ship": {
+      "part_of_speech": "noun",
+      "definition_template": "State, quality, or skill of being {past} or {adjective}"
+    },
+    "-sies": {
+      "part_of_speech": "noun",
+      "definition_template": "Plural or informal version of {present}, diminutive form of {present}"
+    },
+    "-sion": {
+      "part_of_speech": "noun",
+      "definition_template": "The action or process of {present}"
+    },
+    "-sis": {
+      "part_of_speech": "noun",
+      "definition_template": "Action or process of {present}, state or condition of {present}"
+    },
+    "-sol": {
+      "part_of_speech": "noun",
+      "definition_template": "Relating the {past} with the sun"
+    },
+    "-some": {
+      "part_of_speech": "adjective",
+      "definition_template": "Characterized by {present}, tending to {base}"
+    },
+    "-sona": {
+      "part_of_speech": "noun",
+      "definition_template": "A persona or character related to {present}, an identity based on {present}"
+    },
+    "-sophy": {
+      "part_of_speech": "noun",
+      "definition_template": "The study of {present}, philosophy of {present}"
+    },
+    "-speak": {
+      "part_of_speech": "noun",
+      "definition_template": "Way of speaking or language related to {present}, manner of {present}"
+    },
+    "-splain": {
+      "part_of_speech": "verb",
+      "definition_template": "To explain {present} in a condescending or patronizing way"
+    },
+    "-splode": {
+      "part_of_speech": "verb",
+      "definition_template": "To suddenly and violently burst related to {present}"
+    },
+    "-stan": {
+      "part_of_speech": "noun",
+      "definition_template": "Place associated with {present}, a land of {present}"
+    },
+    "-stasis": {
+      "part_of_speech": "noun",
+      "definition_template": "Stopping or stable state of {present}"
+    },
+    "-stat": {
+      "part_of_speech": "noun",
+      "definition_template": "An instrument stabilizing {present}, measuring {present}"
+    },
+    "-ster": {
+      "part_of_speech": "noun",
+      "definition_template": "Person associated with or engaged in {present}, often habitual or pejorative"
+    },
+    "-tacism": {
+      "part_of_speech": "noun",
+      "definition_template": "A speech disorder related to {present}, a defect in pronouncing {present}"
+    },
+    "-tastic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Fantastic or awesome in relation to {present}"
+    },
+    "-taxis": {
+      "part_of_speech": "noun",
+      "definition_template": "Directed movement in response to {present}"
+    },
+    "-tech": {
+      "part_of_speech": "noun",
+      "definition_template": "Technology or techniques related to {present}"
+    },
+    "-th": {
+      "part_of_speech": "noun",
+      "definition_template": "State or quality of being {base}, related to {base}"
+    },
+    "-thon": {
+      "part_of_speech": "noun",
+      "definition_template": "Activity or long event of {present}, often for charity"
+    },
+    "-tion": {
+      "part_of_speech": "noun",
+      "definition_template": "The action or process of {present}"
+    },
+    "-tome": {
+      "part_of_speech": "noun",
+      "definition_template": "A cutting instrument related to {present}"
+    },
+    "-topia": {
+      "part_of_speech": "noun",
+      "definition_template": "Idealized place or state based on {present}"
+    },
+    "-trix": {
+      "part_of_speech": "noun",
+      "definition_template": "Female agent who {present}"
+    },
+    "-tron": {
+      "part_of_speech": "noun",
+      "definition_template": "Device or system related to {present}, often with technology"
+    },
+    "-trophic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to nutrition or growth in {present}, pertaining to {present}"
+    },
+    "-trophy": {
+      "part_of_speech": "noun",
+      "definition_template": "Nourishment related to {present}, growth of {present}"
+    },
+    "-tropic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to or turning towards {present}, influenced by {present}"
+    },
+    "-tropy": {
+      "part_of_speech": "noun",
+      "definition_template": "A condition or state of being {past}, {present}"
+    },
+    "-tude": {
+      "part_of_speech": "noun",
+      "definition_template": "State or quality of being {past} or {adjective}"
+    },
+    "-ty": {
+      "part_of_speech": "noun",
+      "definition_template": "State or quality of being {past} or {adjective}"
+    },
+    "-ular": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to or resembling {present}, pertaining to {present}"
+    },
+    "-ulary": {
+      "part_of_speech": "adjective",
+      "definition_template": "Relating to a small or lesser {present}"
+    },
+    "-ule": {
+      "part_of_speech": "noun",
+      "definition_template": "Small or diminutive form of {present}"
+    },
+    "-ultra": {
+      "part_of_speech": "adjective",
+      "definition_template": "Beyond or extremely {present}"
+    },
+    "-ure": {
+      "part_of_speech": "noun",
+      "definition_template": "The act or process of {present}"
+    },
+    "-urgy": {
+      "part_of_speech": "noun",
+      "definition_template": "The work related to {present}, practice of {present}"
+    },
+    "-uria": {
+      "part_of_speech": "noun",
+      "definition_template": "Condition of urine characterized by {present}"
+    },
+    "-uter": {
+      "part_of_speech": "noun",
+      "definition_template": "Agent or doer associated with {present}"
+    },
+    "-ve": {
+      "part_of_speech": "adjective",
+      "definition_template": "Tending to or characterized by {base}, indicative of {base}"
+    },
+    "-verse": {
+      "part_of_speech": "noun",
+      "definition_template": "World or universe related to {present}, alternate realities"
+    },
+    "-ville": {
+      "part_of_speech": "noun",
+      "definition_template": "Town or settlement of {present}"
+    },
+    "-vore": {
+      "part_of_speech": "noun",
+      "definition_template": "Eating or consuming the {past}"
+    },
+    "-vorous": {
+      "part_of_speech": "adjective",
+      "definition_template": "Feeding on {present}"
+    },
+    "-wad": {
+      "part_of_speech": "noun",
+      "definition_template": "Intensifier and embodiment of being {past}"
+    },
+    "-ward": {
+      "part_of_speech": "adverb/adjective",
+      "definition_template": "In the direction of {present} or the {past}"
+    },
+    "-wards": {
+      "part_of_speech": "adverb",
+      "definition_template": "In the direction toward {present}"
+    },
+    "-ware": {
+      "part_of_speech": "noun",
+      "definition_template": "Goods or products related to {present}, made of {present}"
+    },
+    "-ways": {
+      "part_of_speech": "adverb",
+      "definition_template": "In a manner related to {present}, direction of {present}"
+    },
+    "-wear": {
+      "part_of_speech": "noun",
+      "definition_template": "Clothing or gear related to {present}"
+    },
+    "-wise": {
+      "part_of_speech": "adverb",
+      "definition_template": "In the manner of {present}, related to {present}"
+    },
+    "-witch": {
+      "part_of_speech": "noun",
+      "definition_template": "Practitioner of {present}, often derogatory for women"
+    },
+    "-woman": {
+      "part_of_speech": "noun",
+      "definition_template": "Female person associated with {present}"
+    },
+    "-wood": {
+      "part_of_speech": "noun",
+      "definition_template": "Material or location related to {present}"
+    },
+    "-worthy": {
+      "part_of_speech": "adjective",
+      "definition_template": "Deserving of or suitable for {present}, having qualities of {present}"
+    },
+    "-wright": {
+      "part_of_speech": "noun",
+      "definition_template": "Creator or builder of {present}"
+    },
+    "-y": {
+      "part_of_speech": "adjective",
+      "definition_template": "Characterized by or inclined to {base}, a bit {base}"
+    },
+    "-yard": {
+      "part_of_speech": "noun",
+      "definition_template": "Enclosure or area for {present}"
+    },
+    "-yl": {
+      "part_of_speech": "noun",
+      "definition_template": "Radical or substituent derived from {present}"
+    },
+    "-yne": {
+      "part_of_speech": "noun",
+      "definition_template": "Alkyne hydrocarbon with a triple bond involving {present}"
+    },
+    "-zilla": {
+      "part_of_speech": "noun",
+      "definition_template": "Monstrously large or exaggerated form of {present}"
+    },
+    "-zoa": {
+      "part_of_speech": "noun",
+      "definition_template": "Animals related to {present}"
+    },
+    "-zoic": {
+      "part_of_speech": "adjective",
+      "definition_template": "Pertaining to life or an era characterized by {present}"
+    },
+    "-zoid": {
+      "part_of_speech": "noun",
+      "definition_template": "Robot or mechanical form of {present}, often anthropomorphic"
+    },
+    "-zool": {
+      "part_of_speech": "noun",
+      "definition_template": "Study or treatment related to animal {present}"
+    },
+    "-zoology": {
+      "part_of_speech": "noun",
+      "definition_template": "The study of animal {present}"
+    },
+    "-zyme": {
+      "part_of_speech": "noun",
+      "definition_template": "An enzyme related to {present}, ferment of {present}"
+    }
+  }
+}
