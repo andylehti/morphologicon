@@ -1,82 +1,472 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Morphological Dictionary — Index</title>
-<style>
-  :root { --bg:#0b0b0c; --fg:#e9e9ea; --muted:#9aa0a6; --link:#8ab4f8; --accent:#4a90e2; }
-  html, body { height: 100%; margin:0; }
-  body { display:flex; background:var(--bg); color:var(--fg); font:14px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; }
-  aside { width: 360px; max-width: 40vw; border-right:1px solid #202124; padding:16px; overflow:auto; }
-  main { flex:1; display:flex; flex-direction:column; min-width:0; }
-  h1 { font-size:18px; margin:0 0 12px; }
-  ul { list-style:none; padding:0; margin:0; }
-  li { margin: 6px 0; }
-  a { color:var(--link); text-decoration:none; }
-  a:hover { text-decoration:underline; }
-  small { color:var(--muted); }
-  .viewer { flex:1; min-height:0; border:0; width:100%; }
-  .header { padding:10px 12px; border-bottom:1px solid #202124; display:flex; align-items:center; gap:12px; }
-  .header select { background:#1a1a1b; color:var(--fg); border:1px solid #303134; padding:6px 8px; border-radius:6px; }
-  .header button { background:#1a73e8; color:white; border:0; padding:6px 10px; border-radius:6px; cursor:pointer; }
-  .header button:hover { background:#2b7de9; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MorphGen Interactive Dictionary</title>
+    <!-- Library for reading CSV files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        :root {
+            --base-font-size: 10pt;
+            --aka-font-size: 6pt;
+            --line-height: 1.18;
+            --cols: 5;
+            --col-gap: 8mm;
+            --page-margin: 8mm;
+            --bg-color: #f4f7f9;
+            --panel-bg: #ffffff;
+            --text-color: #333;
+            --header-color: #2c3e50;
+            --border-color: #e0e0e0;
+            --link-color: #3498db;
+            --link-hover: #2980b9;
+        }
+
+        @page {
+            size: A3 portrait;
+            margin: var(--page-margin);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        @media print {
+            body { 
+                display: block;
+                height: auto;
+                overflow: visible;
+             }
+             .sidebar, .header-controls {
+                 display: none !important;
+             }
+             main {
+                 height: auto;
+                 overflow: visible;
+             }
+        }
+
+        .sidebar {
+            width: 300px;
+            background: var(--panel-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            flex-shrink: 0;
+        }
+        
+        .sidebar-header {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-header h1 {
+            font-size: 20px;
+            margin: 0 0 10px 0;
+            color: var(--header-color);
+        }
+
+        #wordFilter {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        #wordIndex {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        #wordIndex li {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s;
+        }
+
+        #wordIndex li:hover {
+            background-color: #eaf2f8;
+        }
+        
+        #wordIndex li.active {
+            background-color: var(--link-color);
+            color: white;
+            font-weight: bold;
+        }
+
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .header-controls {
+            padding: 10px 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: var(--panel-bg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #status {
+            font-style: italic;
+            color: #555;
+        }
+        
+        #downloadBtn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            background-color: #27ae60;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        #downloadBtn:hover {
+            background-color: #229954;
+        }
+        button.hidden {
+            display: none;
+        }
+
+        .results-container {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: var(--page-margin);
+            background: #fdfdfd;
+        }
+        
+        .placeholder {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            color: #888;
+            font-size: 1.2em;
+        }
+
+        .spread {
+            column-count: var(--cols);
+            column-gap: var(--col-gap);
+            column-fill: balance;
+        }
+
+        .e {
+            break-inside: avoid;
+            font-size: var(--base-font-size);
+            line-height: var(--line-height);
+            margin: 0 0 .30em 0;
+            word-break: break-word;
+            hyphens: auto;
+        }
+
+        .w { font-weight: 900; letter-spacing: .2px; }
+        .p { font-style: italic; font-weight: 400; opacity: .85; }
+        .d { font-weight: 400; }
+        .t { opacity: .8; }
+        .aka { font-size: var(--aka-font-size); font-style: italic; color: #444; }
+        .akac { letter-spacing: .1px; }
+
+        @media screen and (max-width: 1600px) { .spread { column-count: 4; } }
+        @media screen and (max-width: 1200px) { .spread { column-count: 3; } }
+        @media screen and (max-width: 900px) { .spread { column-count: 2; } }
+        @media screen and (max-width: 600px) {
+            body { flex-direction: column; height: auto; overflow: auto; }
+            .sidebar { width: 100%; height: 40vh; border-right: none; border-bottom: 1px solid var(--border-color); }
+            .spread { column-count: 1; }
+        }
+    </style>
 </head>
 <body>
-  <aside>
-    <h1>Morphological Dictionary</h1>
-    <p>Click a build to load the A3 autoflow:</p>
-    <ul id="list">
-      <li><a href="#" data-file="morpho_abandon.html">Morphological Dictionary (A3 Autoflow, abandon)</a> <small>(morpho_abandon.html)</small></li>
-<li><a href="#" data-file="morpho_audit.html">Morphological Dictionary (A3 Autoflow, audit)</a> <small>(morpho_audit.html)</small></li>
-    </ul>
-  </aside>
-  <main>
-    <div class="header">
-      <label for="picker">Open:</label>
-      <select id="picker">
-        <option value="morpho_abandon.html">Morphological Dictionary (A3 Autoflow, abandon)</option><option value="morpho_audit.html">Morphological Dictionary (A3 Autoflow, audit)</option>
-      </select>
-      <button id="openNew">Open in new tab</button>
-    </div>
-    <iframe id="viewer" class="viewer" src="morpho_abandon.html" title="Autoflow viewer"></iframe>
-  </main>
-<script>
-  const list = document.getElementById('list');
-  const viewer = document.getElementById('viewer');
-  const picker = document.getElementById('picker');
-  const openNew = document.getElementById('openNew');
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h1>Word Index</h1>
+            <input type="text" id="wordFilter" placeholder="Filter words...">
+        </div>
+        <ul id="wordIndex"></ul>
+    </aside>
 
-  function load(file) {
-    if (!file) return;
-    viewer.src = file;
-    for (const opt of picker.options) {
-      opt.selected = (opt.value === file);
-    }
-    history.replaceState(null, '', '#' + encodeURIComponent(file));
-  }
+    <main>
+        <div class="header-controls">
+            <div id="status">Loading data...</div>
+            <button id="downloadBtn" class="hidden">Download as CSV</button>
+        </div>
+        <div class="results-container" id="resultsContainer">
+            <div class="placeholder">Select a word from the index to begin.</div>
+        </div>
+    </main>
 
-  // Sidebar clicks
-  list.addEventListener('click', (e) => {
-    const a = e.target.closest('a[data-file]');
-    if (a) {
-      e.preventDefault();
-      load(a.dataset.file);
-    }
-  });
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let verbsData = null;
+            let prefixesData = null;
+            let suffixesData = null;
+            let lastResults = [];
+            let allBaseWords = [];
 
-  // Picker
-  picker.addEventListener('change', () => load(picker.value));
+            const statusDiv = document.getElementById('status');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const resultsContainer = document.getElementById('resultsContainer');
+            const wordIndex = document.getElementById('wordIndex');
+            const wordFilter = document.getElementById('wordFilter');
 
-  // Open in new tab
-  openNew.addEventListener('click', () => {
-    if (picker.value) window.open(picker.value, '_blank');
-  });
+            const DATA_URLS = {
+                verbs: 'https://raw.githubusercontent.com/andylehti/morphologicon/main/build/verbFullList.csv',
+                prefixes: 'https://raw.githubusercontent.com/andylehti/morphologicon/main/build/prefixes.csv',
+                suffixes: 'https://raw.githubusercontent.com/andylehti/morphologicon/main/build/completeSuffixes.csv'
+            };
 
-  // Support deep‑linking via hash
-  const fromHash = decodeURIComponent(location.hash.slice(1));
-  if (fromHash) load(fromHash);
-</script>
+            const updateStatus = (message, isError = false) => {
+                statusDiv.textContent = message;
+                statusDiv.style.color = isError ? '#e74c3c' : '#555';
+            };
+            
+            async function fetchData(url) {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
+                }
+                const text = await response.text();
+                return new Promise(resolve => {
+                    Papa.parse(text, {
+                        header: true,
+                        skipEmptyLines: true,
+                        complete: (results) => resolve(results.data.map(row => {
+                            for (let key in row) row[key] = String(row[key] || '');
+                            return row;
+                        })),
+                    });
+                });
+            }
+            
+            async function initialize() {
+                try {
+                    updateStatus('Fetching verb list...');
+                    verbsData = await fetchData(DATA_URLS.verbs);
+                    
+                    updateStatus('Fetching prefixes...');
+                    const rawPrefixes = await fetchData(DATA_URLS.prefixes);
+                    const seen = new Set();
+                    prefixesData = rawPrefixes.filter(item => {
+                        const isDuplicate = seen.has(item.prefix);
+                        if(item.prefix) seen.add(item.prefix);
+                        return !isDuplicate;
+                    });
+
+                    updateStatus('Fetching suffixes...');
+                    const rawSuffixes = await fetchData(DATA_URLS.suffixes);
+                    suffixesData = ensureLinkersColumn(rawSuffixes);
+
+                    populateWordIndex();
+                    updateStatus('Data loaded. Select a word.');
+                } catch (error) {
+                    updateStatus(`Error initializing: ${error.message}`, true);
+                }
+            }
+            
+            function populateWordIndex() {
+                allBaseWords = [...new Set(verbsData.map(v => v.base).filter(Boolean))].sort();
+                let indexHTML = '';
+                for(const word of allBaseWords) {
+                    indexHTML += `<li data-word="${word}">${word}</li>`;
+                }
+                wordIndex.innerHTML = indexHTML;
+            }
+            
+            wordFilter.addEventListener('input', () => {
+                const filterText = wordFilter.value.toLowerCase();
+                const items = wordIndex.getElementsByTagName('li');
+                for(const item of items) {
+                    item.style.display = item.dataset.word.toLowerCase().startsWith(filterText) ? '' : 'none';
+                }
+            });
+
+            wordIndex.addEventListener('click', (e) => {
+                if(e.target && e.target.tagName === 'LI') {
+                    const baseWord = e.target.dataset.word;
+                    
+                    // Update active class
+                    const currentActive = wordIndex.querySelector('.active');
+                    if(currentActive) currentActive.classList.remove('active');
+                    e.target.classList.add('active');
+
+                    generateAndDisplay(baseWord);
+                }
+            });
+
+
+            // --- Linker Sweep and Normalization (from previous version) ---
+            const VOWELS = new Set("aeiou");
+            const _looksLikeLinkerColumn = (columnName, data) => {
+                const name = columnName.toLowerCase();
+                if (name.includes("unnamed") || name.includes("unused") || name.includes("linker")) return true;
+                let okCount = 0;
+                const relevantValues = data.map(row => row[columnName]).filter(Boolean);
+                if (relevantValues.length === 0) return false;
+                for (let val of relevantValues) {
+                    val = String(val).trim().toLowerCase();
+                    if (!val || /^[aeiou\s,|/.\-~∅Ø]+$/.test(val)) okCount++;
+                }
+                return okCount / relevantValues.length >= 0.8;
+            };
+            const _normalizeLinkerCell = (v) => {
+                if (!v) return [];
+                const strV = String(v).toLowerCase().replace(/\n/g, " ");
+                const tokens = strV.split(/[,\s|/.]+/).filter(t => t && Array.from(t).every(char => VOWELS.has(char)));
+                return [...new Set(tokens)];
+            };
+            const ensureLinkersColumn = (data) => {
+                if (!data || data.length === 0) return [];
+                const columns = Object.keys(data[0]);
+                if (!columns.includes("linkers")) {
+                    const linkerCandidates = columns.filter(c => _looksLikeLinkerColumn(c, data));
+                    data.forEach(row => {
+                        row.linkers = linkerCandidates.map(c => row[c] || '').join(' ');
+                    });
+                }
+                data.forEach(row => {
+                    let toks = _normalizeLinkerCell(row.linkers);
+                    if (!toks.includes("")) toks.unshift("");
+                    row.linkers = [...new Set(toks)].join(" ").substring(0, 10);
+                });
+                return data;
+            };
+
+            // --- Morph Engine (from previous version) ---
+            const ASSIMILATION_RULES = { "in-": { "r": "ir-", "l": "il-", "b": "im-", "p": "im-", "m": "im-" }, "ad-": { "c": "ac-", "q": "ac-", "f": "af-", "g": "ag-", "l": "al-", "n": "an-", "p": "ap-", "r": "ar-", "s": "as-", "t": "at-" }, "sub-": { "c": "suc-", "f": "suf-", "p": "sup-", "r": "sur-", "s": "sus-" }, "ex-": { "f": "ef-" }, "en-": { "b": "em-", "p": "em-" }, "co-": { "b": "com-", "p": "com-", "m": "com-", "r": "cor-" }, };
+            const assimilate = (prefix_key, stem) => { if (!stem) return prefix_key; const first_char = stem[0].toLowerCase(); if (prefix_key === "a-" && VOWELS.has(first_char)) return "an-"; if (prefix_key === "ex-" && VOWELS.has(first_char)) return "e-"; if (prefix_key === "co-" && !"bpmr".includes(first_char)) return "con-"; if (ASSIMILATION_RULES[prefix_key]) { return ASSIMILATION_RULES[prefix_key][first_char] || prefix_key; } return prefix_key; };
+            const join = (prefix_surface, stem) => { const core = prefix_surface.endsWith('-') ? prefix_surface.slice(0, -1) : prefix_surface; if (!core || !stem) return core + (stem || ''); const coreLast = core.slice(-1).toLowerCase(); const stemFirst = stem[0].toLowerCase(); if (coreLast === stemFirst) return core + stem.slice(1); if (VOWELS.has(coreLast) && VOWELS.has(stemFirst)) return core.slice(0, -1) + stem; return core + stem; };
+            const assemble_prefix = (prefix_key, stem) => join(assimilate(prefix_key, stem), stem);
+            const naive_inflect = (base) => { if (base.endsWith("e") && base !== "be") { return { base: base, present: base.slice(0, -1) + "ing", past: base + "d", participle: base + "d", adjective: base + "able" }; } return { base: base, present: base + "ing", past: base + "ed", participle: base + "ed", adjective: base + "able" }; };
+            const instantiate_table_def = (template, forms) => { let t = String(template || "").trim(); const repl = { base: forms.base || "", present: forms.present || "", past: forms.past || "", adjective: forms.adjective || "", plural: (forms.base || "") + "s" }; for (const [key, value] of Object.entries(repl)) { t = t.replace(new RegExp(`{${key}}`, 'g'), value); } return t ? t.trim().replace(/\.$/, "") + "." : ""; };
+            const render_dynamic = (suffix_row_def, forms) => { if (suffix_row_def && suffix_row_def.trim()) { return instantiate_table_def(suffix_row_def, forms); } return `An act or state related to ${forms.present}.`; };
+            
+            // --- Generation and Display Logic ---
+            const generateAndDisplay = (base) => {
+                if (!base) return;
+                updateStatus(`Generating forms for "${base}"...`);
+                
+                const verbsLookup = verbsData.reduce((acc, row) => { if (row.base) acc[row.base.toLowerCase()] = row; return acc; }, {});
+                const all_rows = [];
+                const bucket = new Map();
+                const forms = verbsLookup[base.toLowerCase()] || naive_inflect(base);
+                if (!forms.present) forms.present = naive_inflect(base).present;
+
+                for (const srow of suffixesData) {
+                    const suf = srow.suffix || "";
+                    const prex_tokens = (srow.prex || "").split(' ').filter(Boolean);
+                    if (prex_tokens.length === 0) prex_tokens.push("");
+                    const linkers = (srow.linkers || "").split(' ');
+                    const row_def = srow.definition || "";
+                    const pog = srow.part_of_grammar || "";
+                    for (const px of prex_tokens) {
+                        const stem = forms.base + px;
+                        for (const pref_row of prefixesData) {
+                            const pref_key = pref_row.prefix;
+                            if (!pref_key) continue;
+                            const fam = pref_row.alias_of || pref_key;
+                            const definition = render_dynamic(row_def, forms);
+                            const variants = new Set();
+                            for (const L of linkers) {
+                                variants.add(assemble_prefix(pref_key, stem) + (L + suf));
+                            }
+                            const concept_key = [fam, suf, px, pog, definition].join('||');
+                            if (!bucket.has(concept_key)) {
+                                bucket.set(concept_key, {
+                                    forms: new Set(),
+                                    meta: { part_of_grammar: pog, prefix_family: fam, prefix_input_example: pref_key, prex: px, suffix: suf, definition: definition, ...forms }
+                                });
+                            }
+                            variants.forEach(v => bucket.get(concept_key).forms.add(v));
+                        }
+                    }
+                }
+
+                for (const value of bucket.values()) {
+                    const formList = Array.from(value.forms).sort((a, b) => a.length - b.length);
+                    if (formList.length > 0) {
+                        all_rows.push({ form: formList[0], aka_forms: formList.slice(1).join(', '), ...value.meta });
+                    }
+                }
+
+                lastResults = all_rows.sort((a, b) => a.form.localeCompare(b.form));
+                displayPrintLayout(lastResults, base);
+            };
+
+            const escapeHtml = (unsafe) => unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+
+            const displayPrintLayout = (rows, base) => {
+                if (rows.length === 0) {
+                    resultsContainer.innerHTML = '<div class="placeholder">No forms generated for this word.</div>';
+                    updateStatus(`No forms found for "${base}".`);
+                    downloadBtn.classList.add('hidden');
+                    return;
+                }
+                
+                let entries_html = '';
+                for (const row of rows) {
+                    const word = escapeHtml(row.form || "");
+                    const pog = escapeHtml(row.part_of_grammar || "");
+                    const definition = escapeHtml(row.definition || "");
+                    const pf = escapeHtml(row.prefix_family || "");
+                    const pie = escapeHtml(row.prefix_input_example || "");
+                    const baseWord = escapeHtml(row.base || "");
+                    const prex = escapeHtml(row.prex || "");
+                    const suffix = escapeHtml(row.suffix || "");
+                    const aka = escapeHtml(row.aka_forms || "");
+
+                    const pog_short = pog ? pog.substring(0, 1) : "";
+                    let parts = [`<span class="w">${word}</span>`];
+                    if (pog_short) parts.push(`<i class="p">(${pog_short})</i>`);
+                    if (definition) parts.push(`<span class="d">${definition}</span>`);
+                    
+                    const trail_elems = [pf, pie, baseWord, prex, suffix].filter(Boolean);
+                    if (trail_elems.length > 0) parts.push(`<span class="t">${trail_elems.join(' · ')}</span>`);
+                    if (aka) parts.push(` \\ <span class="aka">*</span><span class="aka akac">${aka}</span><span class="aka">*</span> \\ `);
+                    
+                    entries_html += `<div class="e">${parts.join(' ')}</div>`;
+                }
+
+                resultsContainer.innerHTML = `<div class="spread">${entries_html}</div>`;
+                updateStatus(`Displayed ${rows.length} forms for "${base}".`);
+                downloadBtn.classList.remove('hidden');
+            };
+
+            const downloadCSV = () => {
+                if (lastResults.length === 0) return;
+                const activeWord = wordIndex.querySelector('.active')?.dataset.word || 'morphgen';
+                const csv = Papa.unparse(lastResults);
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `${activeWord}_results.csv`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+
+            downloadBtn.addEventListener('click', downloadCSV);
+
+            // Start the application
+            initialize();
+        });
+    </script>
 </body>
 </html>
+
