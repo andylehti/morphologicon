@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Morphologicon: Morphological Lexical Interactive Dictionary for Research</title>
+    <title>MorphGen Interactive Dictionary</title>
     <!-- Library for reading CSV files -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@700&family=EB+Garamond&display=swap" rel="stylesheet">
     <style>
         :root {
             --base-font-size: 10pt;
@@ -26,6 +29,7 @@
             --hover-bg: #eaf2f8;
             --loader-bg: rgba(255, 255, 255, 0.8);
             --loader-color: #3498db;
+            --input-bg: #fff;
         }
 
         .dark-mode {
@@ -40,6 +44,7 @@
             --hover-bg: #2c3e50;
             --loader-bg: rgba(0, 0, 0, 0.7);
             --loader-color: #8ab4f8;
+            --input-bg: #2a2a2a;
         }
 
         @page {
@@ -53,29 +58,131 @@
             color: var(--text-color);
             line-height: 1.6;
             margin: 0;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
             transition: background-color 0.3s, color 0.3s;
         }
         
-        @media print {
-            body { 
-                display: block;
-                height: auto;
-                overflow: visible;
-                background-color: #fff !important;
-                color: #000 !important;
-             }
-             .sidebar, .header-controls, .loader-overlay {
-                 display: none !important;
-             }
-             main {
-                 height: auto;
-                 overflow: visible;
-             }
+        .main-ui {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
         }
 
+        .hidden { display: none !important; }
+
+        @media print {
+            body { 
+                display: block; height: auto; overflow: visible;
+                background-color: #fff !important; color: #000 !important;
+             }
+             .sidebar, .header-controls, .loader-overlay, #settings-overlay { display: none !important; }
+             main { height: auto; overflow: visible; }
+        }
+
+        /* --- Settings Overlay --- */
+        #settings-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            font-family: 'EB Garamond', serif;
+        }
+        .settings-panel {
+            background-color: var(--panel-bg);
+            padding: 2.5rem;
+            border: 1px solid var(--text-color);
+            box-shadow: 0 0 0 4px var(--panel-bg), 0 0 0 5px var(--text-color);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+        .cover-content {
+             margin-bottom: 2rem;
+        }
+        .cover-subtitle-top {
+            font-size: 0.9rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin: 0 0 1rem;
+            color: var(--text-color);
+        }
+        .cover-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            margin: 0 0 0.5rem;
+            color: var(--header-color);
+            text-transform: uppercase;
+        }
+        .cover-subtitle {
+            font-size: 1rem;
+            letter-spacing: 0.15em;
+            line-height: 1.5;
+            text-transform: uppercase;
+            margin: 0;
+            color: var(--text-color);
+        }
+        .cover-divider {
+            border: 0;
+            border-top: 1px solid var(--text-color);
+            width: 50%;
+            margin: 2rem auto;
+        }
+        .cover-edition {
+            font-size: 0.8rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin: 0 0 2rem;
+            color: var(--text-color);
+        }
+        
+        .settings-controls {
+             display: grid;
+             grid-template-columns: 1fr;
+             gap: 15px;
+             margin-bottom: 2rem;
+             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        .settings-group {
+            text-align: left;
+        }
+        .settings-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        .settings-group select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: var(--text-color);
+        }
+        #start-app-btn {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            background-color: var(--header-color);
+            color: var(--bg-color);
+            border: 1px solid var(--header-color);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        #start-app-btn:hover {
+            background-color: transparent;
+            color: var(--header-color);
+        }
+
+
+        /* --- Main UI --- */
         .sidebar {
             width: 300px;
             background: var(--panel-bg);
@@ -92,171 +199,88 @@
             border-bottom: 1px solid var(--border-color);
             transition: border-color 0.3s;
         }
-
-        .sidebar-header h1 {
-            font-size: 20px;
-            margin: 0 0 10px 0;
-            color: var(--header-color);
-            transition: color 0.3s;
-        }
-
-        #wordFilter {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid var(--border-color);
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            border-radius: 4px;
-            box-sizing: border-box;
+        .sidebar-header h1 { font-size: 24px; margin: 0; color: var(--header-color); transition: color 0.3s; }
+        .sidebar-header h2 { font-size: 16px; margin: 0 0 10px 0; font-weight: normal; opacity: 0.8; }
+        .sidebar-controls { display: flex; gap: 10px; margin-top: 10px; }
+        .sidebar-controls input, .sidebar-controls select {
+            width: 100%; padding: 8px; border: 1px solid var(--border-color);
+            background-color: var(--input-bg); color: var(--text-color);
+            border-radius: 4px; box-sizing: border-box;
             transition: background-color 0.3s, color 0.3s, border-color 0.3s;
         }
 
-        #wordIndex {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            overflow-y: auto;
-            flex-grow: 1;
-        }
-        
-        #wordIndex.loading {
-            opacity: 0.5;
-            pointer-events: none;
-        }
-
+        #wordIndex { list-style: none; padding: 0; margin: 0; overflow-y: auto; flex-grow: 1; }
+        #wordIndex.loading { opacity: 0.5; pointer-events: none; }
         #wordIndex li {
-            padding: 10px 15px;
-            cursor: pointer;
+            padding: 10px 15px; cursor: pointer;
             border-bottom: 1px solid var(--border-color);
             transition: background-color 0.2s, border-color 0.3s;
         }
+        #wordIndex li:hover { background-color: var(--hover-bg); }
+        #wordIndex li.active { background-color: var(--link-color); color: white; font-weight: bold; }
+        #wordIndex li.active:hover { background-color: var(--link-hover); }
 
-        #wordIndex li:hover {
-            background-color: var(--hover-bg);
+        .sidebar-footer { padding: 10px; border-top: 1px solid var(--border-color); }
+        .sidebar-footer button {
+             width: 100%; padding: 10px; background-color: var(--link-color);
+             color: white; border: none; border-radius: 4px; cursor: pointer;
         }
-        
-        #wordIndex li.active {
-            background-color: var(--link-color);
-            color: white;
-            font-weight: bold;
+        .unlisted-word-panel { display: none; padding: 10px; background-color: var(--bg-color); }
+        .unlisted-word-panel.active { display: block; }
+        .unlisted-word-panel .form-group { margin-bottom: 8px; }
+        .unlisted-word-panel label { display: block; font-size: 0.9em; margin-bottom: 3px; }
+        .unlisted-word-panel input { 
+            width: 100%; box-sizing: border-box; padding: 8px;
+            border: 1px solid var(--border-color); background-color: var(--input-bg);
+            color: var(--text-color); border-radius: 4px;
         }
-         #wordIndex li.active:hover {
-            background-color: var(--link-hover);
-        }
+        .unlisted-word-panel .panel-buttons { display: flex; gap: 10px; margin-top: 10px; }
 
-        main {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            position: relative;
-        }
-        
+
+        main { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
         .header-controls {
-            padding: 10px 20px;
-            border-bottom: 1px solid var(--border-color);
-            background: var(--panel-bg);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background-color 0.3s, border-color 0.3s;
-            flex-shrink: 0;
+            padding: 10px 20px; border-bottom: 1px solid var(--border-color);
+            background: var(--panel-bg); display: flex; flex-wrap: wrap;
+            justify-content: space-between; align-items: center; gap: 15px;
+            transition: background-color 0.3s, border-color 0.3s; flex-shrink: 0;
         }
-        
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 15px;
+        .header-group { display: flex; align-items: center; gap: 10px; }
+        .header-group label { font-size: 0.9em; }
+        .header-group select, .header-group button {
+             background: var(--input-bg); border: 1px solid var(--border-color);
+             color: var(--text-color); padding: 5px 10px; cursor: pointer; border-radius: 4px;
         }
-
-        #status {
-            font-style: italic;
-        }
-        
-        #themeToggle {
-             background: none;
-             border: 1px solid var(--border-color);
-             color: var(--text-color);
-             padding: 5px 10px;
-             cursor: pointer;
-             border-radius: 4px;
-        }
-        
+        #status { font-style: italic; }
         #downloadBtn {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 4px;
-            color: #fff;
-            background-color: #27ae60;
-            cursor: pointer;
-            transition: background-color 0.2s;
+            padding: 8px 15px; border: none; border-radius: 4px;
+            color: #fff; background-color: #27ae60;
+            cursor: pointer; transition: background-color 0.2s;
         }
-        #downloadBtn:hover {
-            background-color: #229954;
-        }
-        button.hidden {
-            display: none;
-        }
+        #downloadBtn:hover { background-color: #229954; }
         
         .loader-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: var(--loader-bg);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            transition: opacity 0.3s;
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--loader-bg); display: flex;
+            justify-content: center; align-items: center;
+            z-index: 1000; transition: opacity 0.3s;
         }
-
         .loader {
-            border: 5px solid var(--bg-color);
-            border-top: 5px solid var(--loader-color);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
+            border: 5px solid var(--bg-color); border-top: 5px solid var(--loader-color);
+            border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite;
         }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         .results-container {
-            flex-grow: 1;
-            overflow-y: auto;
-            padding: var(--page-margin);
-            background: var(--bg-color);
-            transition: background-color 0.3s;
+            flex-grow: 1; overflow-y: auto; padding: var(--page-margin);
+            background: var(--bg-color); transition: background-color 0.3s;
         }
-        
-        .placeholder {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100%;
-            font-size: 1.2em;
-        }
-
-        .spread {
-            column-count: var(--cols);
-            column-gap: var(--col-gap);
-            column-fill: balance;
-        }
-
+        .placeholder { display: flex; justify-content: center; align-items: center; height: 100%; font-size: 1.2em; }
+        .spread { column-count: var(--cols); column-gap: var(--col-gap); column-fill: balance; }
         .e {
-            break-inside: avoid;
-            font-size: var(--base-font-size);
-            line-height: var(--line-height);
-            margin: 0 0 .30em 0;
-            word-break: break-word;
-            hyphens: auto;
+            break-inside: avoid; font-size: var(--base-font-size);
+            line-height: var(--line-height); margin: 0 0 .30em 0;
+            word-break: break-word; hyphens: auto;
         }
-
         .w { font-weight: 900; letter-spacing: .2px; }
         .p { font-style: italic; font-weight: 400; opacity: .85; }
         .d { font-weight: 400; }
@@ -275,45 +299,127 @@
     </style>
 </head>
 <body>
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <h1>Word Index</h1>
-            <input type="text" id="wordFilter" placeholder="Filter words...">
-        </div>
-        <ul id="wordIndex"></ul>
-    </aside>
 
-    <main>
-        <div class="loader-overlay" style="display: none;"><div class="loader"></div></div>
-        <div class="header-controls">
-            <div class="header-left">
-                <div id="status">Loading data...</div>
-                <button id="themeToggle">Toggle Theme</button>
+    <div id="settings-overlay">
+        <div class="settings-panel">
+            <div class="cover-content">
+                <p class="cover-subtitle-top">LEHTII CODEX</p>
+                <h1 class="cover-title">MORPHOLOGICON</h1>
+                <p class="cover-subtitle">A LEXICAL DISQUISITION<br>ON FORMS, ROOTS, AND INFLECTIONS</p>
+                <hr class="cover-divider">
+                <p class="cover-edition">FIRST EDITION</p>
             </div>
-            <button id="downloadBtn" class="hidden">Download as CSV</button>
+            <div class="settings-controls">
+                <div class="settings-group">
+                    <label for="setting-dict-version">Dictionary Engine</label>
+                    <select id="setting-dict-version">
+                        <option value="hybrid">Hybrid (Recommended)</option>
+                        <option value="v1">Version 1 (Original)</option>
+                        <option value="v2">Version 2 (New Templates)</option>
+                        <option value="all">All Variations (Experimental)</option>
+                    </select>
+                </div>
+                <div class="settings-group">
+                    <label for="setting-word-sort">Word Index Sorting</label>
+                    <select id="setting-word-sort">
+                        <option value="random">Randomize</option>
+                        <option value="alpha">Alphabetical</option>
+                        <option value="len-desc">Length (Long to Short)</option>
+                    </select>
+                </div>
+                 <div class="settings-group">
+                    <label for="setting-result-sort">Definition Results Sorting</label>
+                    <select id="setting-result-sort">
+                        <option value="len-asc">Length (Short to Long)</option>
+                        <option value="alpha">Alphabetical</option>
+                        <option value="random">Randomize</option>
+                     </select>
+                </div>
+            </div>
+            <button id="start-app-btn">Enter</button>
         </div>
-        <div class="results-container" id="resultsContainer">
-            <div class="placeholder">Select a word from the index to begin.</div>
-        </div>
-    </main>
+    </div>
+
+    <div class="main-ui hidden">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>Morphologicon</h1>
+                <h2>Word Index</h2>
+                <div class="sidebar-controls">
+                    <input type="text" id="wordFilter" placeholder="Filter words...">
+                </div>
+            </div>
+            <ul id="wordIndex"></ul>
+            <div class="sidebar-footer">
+                <button id="toggleUnlistedBtn">Generate Unlisted Word</button>
+                <div id="unlistedWordPanel" class="unlisted-word-panel">
+                    <div class="form-group">
+                        <label for="base-form">Base / Infinitive</label>
+                        <input type="text" id="base-form" placeholder="e.g., eat">
+                    </div>
+                    <div id="other-forms-container"></div>
+                     <div class="panel-buttons">
+                        <button id="autoFillBtn">Auto-fill</button>
+                        <button id="generateUnlistedBtn">Generate</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main>
+            <div class="loader-overlay hidden"><div class="loader"></div></div>
+            <div class="header-controls">
+                <div id="status">Loading data...</div>
+                <div class="header-group">
+                    <label for="resultSort">Sort Results:</label>
+                    <select id="resultSort">
+                       <option value="len-asc">Length (Short to Long)</option>
+                       <option value="alpha">Alphabetical</option>
+                       <option value="random">Randomize</option>
+                    </select>
+                </div>
+                <div class="header-group">
+                    <button id="themeToggle">Toggle Dark Mode</button>
+                    <button id="downloadBtn" class="hidden">Download as CSV</button>
+                </div>
+            </div>
+            <div class="results-container" id="resultsContainer">
+                <div class="placeholder">Select a word from the index to begin.</div>
+            </div>
+        </main>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            let verbsData = null;
-            let prefixesData = null;
-            let suffixesData = null;
-            let memePrefixes = null;
-            let memeSuffixes = null;
+            // State variables
+            let allData = { verbs: null, prefixes: null, suffixes: null, memePrefixes: null, memeSuffixes: null };
             let lastResults = [];
             let allBaseWords = [];
+            let isGenerating = false;
+            let currentSettings = {};
 
-            const statusDiv = document.getElementById('status');
-            const downloadBtn = document.getElementById('downloadBtn');
-            const resultsContainer = document.getElementById('resultsContainer');
-            const wordIndex = document.getElementById('wordIndex');
-            const wordFilter = document.getElementById('wordFilter');
-            const themeToggle = document.getElementById('themeToggle');
-            const loaderOverlay = document.querySelector('.loader-overlay');
+            // DOM Elements
+            const dom = {
+                status: document.getElementById('status'),
+                downloadBtn: document.getElementById('downloadBtn'),
+                resultsContainer: document.getElementById('resultsContainer'),
+                wordIndex: document.getElementById('wordIndex'),
+                wordFilter: document.getElementById('wordFilter'),
+                themeToggle: document.getElementById('themeToggle'),
+                loaderOverlay: document.querySelector('.loader-overlay'),
+                toggleUnlistedBtn: document.getElementById('toggleUnlistedBtn'),
+                unlistedWordPanel: document.getElementById('unlistedWordPanel'),
+                autoFillBtn: document.getElementById('autoFillBtn'),
+                generateUnlistedBtn: document.getElementById('generateUnlistedBtn'),
+                otherFormsContainer: document.getElementById('other-forms-container'),
+                resultSort: document.getElementById('resultSort'),
+                settingsOverlay: document.getElementById('settings-overlay'),
+                startAppBtn: document.getElementById('start-app-btn'),
+                settingDictVersion: document.getElementById('setting-dict-version'),
+                settingWordSort: document.getElementById('setting-word-sort'),
+                settingResultSort: document.getElementById('setting-result-sort'),
+                mainUI: document.querySelector('.main-ui')
+            };
 
             const DATA_URLS = {
                 verbs: 'https://raw.githubusercontent.com/andylehti/morphologicon/main/build/verbFullList.csv',
@@ -323,20 +429,40 @@
             };
 
             const updateStatus = (message, isError = false) => {
-                statusDiv.textContent = message;
-                statusDiv.style.color = isError ? '#e74c3c' : '#555';
+                dom.status.textContent = message;
+                dom.status.style.color = isError ? '#e74c3c' : 'var(--text-color)';
             };
-            
-            async function fetchCSV(url) {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
+
+            // --- App Startup ---
+            dom.startAppBtn.addEventListener('click', startup);
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && !dom.settingsOverlay.classList.contains('hidden')) {
+                    startup();
                 }
+            });
+
+            function startup() {
+                currentSettings = {
+                    dictVersion: dom.settingDictVersion.value,
+                    wordSort: dom.settingWordSort.value,
+                    resultSort: dom.settingResultSort.value
+                };
+                dom.resultSort.value = currentSettings.resultSort; // Sync main UI sort with setting
+                dom.settingsOverlay.classList.add('hidden');
+                dom.mainUI.classList.remove('hidden');
+                initialize();
+            }
+
+            // --- Data Fetching & Initialization ---
+            async function fetchResource(url, type = 'csv') {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Fetch failed for ${url}: ${response.statusText}`);
+                if (type === 'json') return await response.json();
+                
                 const text = await response.text();
                 return new Promise(resolve => {
                     Papa.parse(text, {
-                        header: true,
-                        skipEmptyLines: true,
+                        header: true, skipEmptyLines: true,
                         complete: (results) => resolve(results.data.map(row => {
                             for (let key in row) row[key] = String(row[key] || '');
                             return row;
@@ -345,273 +471,386 @@
                 });
             }
 
-            async function fetchJSON(url) {
-                const response = await fetch(url);
-                 if (!response.ok) {
-                    throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
-                }
-                return await response.json();
-            }
-            
             async function initialize() {
                 try {
-                    loaderOverlay.style.display = 'flex';
-                    updateStatus('Fetching verb list...');
-                    verbsData = await fetchCSV(DATA_URLS.verbs);
-                    
-                    updateStatus('Fetching prefixes...');
-                    const rawPrefixes = await fetchCSV(DATA_URLS.prefixes);
+                    setLoading(true, 'Fetching all data...');
+                    const [verbs, rawPrefixes, rawSuffixes, memes] = await Promise.all([
+                        fetchResource(DATA_URLS.verbs), fetchResource(DATA_URLS.prefixes),
+                        fetchResource(DATA_URLS.suffixes), fetchResource(DATA_URLS.morphmemes, 'json'),
+                    ]);
+
+                    allData.verbs = verbs;
                     const seen = new Set();
-                    prefixesData = rawPrefixes.filter(item => {
+                    allData.prefixes = rawPrefixes.filter(item => {
                         const isDuplicate = seen.has(item.prefix);
                         if(item.prefix) seen.add(item.prefix);
                         return !isDuplicate;
                     });
+                    allData.suffixes = ensureLinkersColumn(rawSuffixes);
+                    allData.memePrefixes = memes.prefixes;
+                    allData.memeSuffixes = memes.suffixes;
 
-                    updateStatus('Fetching suffixes...');
-                    const rawSuffixes = await fetchCSV(DATA_URLS.suffixes);
-                    suffixesData = ensureLinkersColumn(rawSuffixes);
-
-                    updateStatus('Fetching definition templates...');
-                    const memesData = await fetchJSON(DATA_URLS.morphmemes);
-                    memePrefixes = memesData.prefixes;
-                    memeSuffixes = memesData.suffixes;
-
-                    populateWordIndex();
+                    allBaseWords = [...new Set(allData.verbs.map(v => v.base).filter(Boolean))];
+                    sortAndPopulateWordIndex();
+                    setupUnlistedPanel();
                     updateStatus('Data loaded. Select a word.');
                 } catch (error) {
-                    updateStatus(`Error initializing: ${error.message}`, true);
+                    updateStatus(`Initialization Error: ${error.message}`, true);
                 } finally {
-                    loaderOverlay.style.display = 'none';
+                    setLoading(false);
                 }
             }
             
-            function populateWordIndex() {
-                allBaseWords = [...new Set(verbsData.map(v => v.base).filter(Boolean))].sort();
-                let indexHTML = '';
-                for(const word of allBaseWords) {
-                    indexHTML += `<li data-word="${word}">${word}</li>`;
-                }
-                wordIndex.innerHTML = indexHTML;
+            // --- UI & Event Handlers ---
+            function setLoading(isLoading, message = '') {
+                isGenerating = isLoading;
+                dom.loaderOverlay.classList.toggle('hidden', !isLoading);
+                dom.wordIndex.classList.toggle('loading', isLoading);
+                if (message) updateStatus(message);
             }
-            
-            wordFilter.addEventListener('input', () => {
-                const filterText = wordFilter.value.toLowerCase();
-                const items = wordIndex.getElementsByTagName('li');
-                for(const item of items) {
-                    item.style.display = item.dataset.word.toLowerCase().startsWith(filterText) ? '' : 'none';
-                }
-            });
 
-            wordIndex.addEventListener('click', (e) => {
-                if(e.target && e.target.tagName === 'LI') {
-                    const baseWord = e.target.dataset.word;
-                    
-                    const currentActive = wordIndex.querySelector('.active');
+            dom.wordFilter.addEventListener('input', sortAndPopulateWordIndex);
+            
+            dom.wordIndex.addEventListener('click', (e) => {
+                const target = e.target.closest('li');
+                if(target && !isGenerating) {
+                    const baseWord = target.dataset.word;
+                    const currentActive = dom.wordIndex.querySelector('.active');
                     if(currentActive) currentActive.classList.remove('active');
-                    e.target.classList.add('active');
-
-                    generateAndDisplay(baseWord);
+                    target.classList.add('active');
+                    dom.unlistedWordPanel.classList.remove('active');
+                    generateAndDisplay({ base: baseWord });
                 }
             });
+            
+            dom.resultSort.addEventListener('change', () => {
+                displayPrintLayout(lastResults);
+            });
 
+            // --- Word Index Logic ---
+            function sortAndPopulateWordIndex() {
+                const sortType = currentSettings.wordSort;
+                const filterText = dom.wordFilter.value.toLowerCase();
+                let words = [...allBaseWords];
 
-            // --- Linker Sweep and Normalization ---
+                if (sortType === 'random') words.sort(() => Math.random() - 0.5);
+                else if (sortType === 'alpha') words.sort((a, b) => a.localeCompare(b));
+                else if (sortType === 'len-desc') words.sort((a, b) => b.length - a.length);
+
+                let indexHTML = words
+                    .filter(word => word.toLowerCase().startsWith(filterText))
+                    .map(word => `<li data-word="${word}">${word}</li>`)
+                    .join('');
+                dom.wordIndex.innerHTML = indexHTML;
+            }
+
+            // --- Unlisted Word Panel Logic ---
+            function setupUnlistedPanel() {
+                const formFields = [
+                    { key: 'present_singular', label: '3rd person singular present', placeholder: 'e.g., eats' },
+                    { key: 'past_simple', label: 'Past simple', placeholder: 'e.g., ate' },
+                    { key: 'past_participle', label: 'Past participle', placeholder: 'e.g., eaten' },
+                    { key: 'present_participle', label: 'Present participle / gerund', placeholder: 'e.g., eating' },
+                    { key: 'adjective', label: 'Derivative adjective', placeholder: 'e.g., eatable' }
+                ];
+
+                dom.otherFormsContainer.innerHTML = formFields.map(field => `
+                    <div class="form-group">
+                        <label for="${field.key}-form">${field.label}</label>
+                        <input type="text" id="${field.key}-form" data-key="${field.key}" placeholder="${field.placeholder}">
+                    </div>`).join('');
+
+                dom.toggleUnlistedBtn.addEventListener('click', () => dom.unlistedWordPanel.classList.toggle('active'));
+
+                dom.autoFillBtn.addEventListener('click', () => {
+                    const base = document.getElementById('base-form').value.trim();
+                    if (!base) { alert('Please enter a base word first.'); return; }
+                    const forms = naive_inflect(base);
+                    for (const key in forms) {
+                        const input = document.getElementById(`${key}-form`);
+                        if(input) input.value = forms[key] || '';
+                    }
+                });
+
+                dom.generateUnlistedBtn.addEventListener('click', () => {
+                    const forms = { base: document.getElementById('base-form').value.trim() };
+                    if (!forms.base) { alert('A base word is required.'); return; }
+                    
+                    dom.otherFormsContainer.querySelectorAll('input').forEach(input => {
+                        forms[input.dataset.key] = input.value.trim();
+                    });
+                    
+                    const currentActive = dom.wordIndex.querySelector('.active');
+                    if (currentActive) currentActive.classList.remove('active');
+                    generateAndDisplay(forms);
+                });
+            }
+
+            // --- Linker & Morph Engine (Full Implementation) ---
             const VOWELS = new Set("aeiou");
-            const _looksLikeLinkerColumn = (columnName, data) => {
-                const name = columnName.toLowerCase();
-                if (name.includes("unnamed") || name.includes("unused") || name.includes("linker")) return true;
-                let okCount = 0;
-                const relevantValues = data.map(row => row[columnName]).filter(Boolean);
-                if (relevantValues.length === 0) return false;
-                for (let val of relevantValues) {
-                    val = String(val).trim().toLowerCase();
-                    if (!val || /^[aeiou\s,|/.\-~∅Ø]+$/.test(val)) okCount++;
-                }
-                return okCount / relevantValues.length >= 0.8;
-            };
-            const _normalizeLinkerCell = (v) => {
-                if (!v) return [];
-                const strV = String(v).toLowerCase().replace(/\n/g, " ");
-                const tokens = strV.split(/[,\s|/.]+/).filter(t => t && Array.from(t).every(char => VOWELS.has(char)));
-                return [...new Set(tokens)];
-            };
             const ensureLinkersColumn = (data) => {
                 if (!data || data.length === 0) return [];
                 const columns = Object.keys(data[0]);
                 if (!columns.includes("linkers")) {
-                    const linkerCandidates = columns.filter(c => _looksLikeLinkerColumn(c, data));
-                    data.forEach(row => {
-                        row.linkers = linkerCandidates.map(c => row[c] || '').join(' ');
+                    const linkerCandidates = columns.filter(c => {
+                        const name = c.toLowerCase();
+                        if (name.includes("unnamed") || name.includes("unused") || name.includes("linker")) return true;
+                        let okCount = 0;
+                        const relevantValues = data.map(row => row[c]).filter(Boolean);
+                        if (relevantValues.length === 0) return false;
+                        for (let val of relevantValues) {
+                            val = String(val).trim().toLowerCase();
+                            if (!val || /^[aeiou\s,|/.\-~∅Ø]+$/.test(val)) okCount++;
+                        }
+                        return okCount / relevantValues.length >= 0.8;
                     });
+                    data.forEach(row => { row.linkers = linkerCandidates.map(c => row[c] || '').join(' '); });
                 }
                 data.forEach(row => {
-                    let toks = _normalizeLinkerCell(row.linkers);
+                    if (!row.linkers) row.linkers = '';
+                    const strV = String(row.linkers).toLowerCase().replace(/\n/g, " ");
+                    const tokens = strV.split(/[,\s|/.]+/).filter(t => t && Array.from(t).every(char => VOWELS.has(char)));
+                    let toks = [...new Set(tokens)];
                     if (!toks.includes("")) toks.unshift("");
-                    row.linkers = [...new Set(toks)].join(" ").substring(0, 10);
+                    row.linkers = toks.join(" ").substring(0, 10);
                 });
                 return data;
             };
 
-            // --- Morph Engine ---
             const ASSIMILATION_RULES = { "in-": { "r": "ir-", "l": "il-", "b": "im-", "p": "im-", "m": "im-" }, "ad-": { "c": "ac-", "q": "ac-", "f": "af-", "g": "ag-", "l": "al-", "n": "an-", "p": "ap-", "r": "ar-", "s": "as-", "t": "at-" }, "sub-": { "c": "suc-", "f": "suf-", "p": "sup-", "r": "sur-", "s": "sus-" }, "ex-": { "f": "ef-" }, "en-": { "b": "em-", "p": "em-" }, "co-": { "b": "com-", "p": "com-", "m": "com-", "r": "cor-" }, };
-            const assimilate = (prefix_key, stem) => { if (!stem) return prefix_key; const first_char = stem[0].toLowerCase(); if (prefix_key === "a-" && VOWELS.has(first_char)) return "an-"; if (prefix_key === "ex-" && VOWELS.has(first_char)) return "e-"; if (prefix_key === "co-" && !"bpmr".includes(first_char)) return "con-"; if (ASSIMILATION_RULES[prefix_key]) { return ASSIMILATION_RULES[prefix_key][first_char] || prefix_key; } return prefix_key; };
+            const assimilate = (prefix_key, stem) => { if (!stem || !stem[0]) return prefix_key; const first_char = stem[0].toLowerCase(); if (prefix_key === "a-" && VOWELS.has(first_char)) return "an-"; if (prefix_key === "ex-" && VOWELS.has(first_char)) return "e-"; if (prefix_key === "co-" && !"bpmr".includes(first_char)) return "con-"; if (ASSIMILATION_RULES[prefix_key]) { return ASSIMILATION_RULES[prefix_key][first_char] || prefix_key; } return prefix_key; };
             const join = (prefix_surface, stem) => { const core = prefix_surface.endsWith('-') ? prefix_surface.slice(0, -1) : prefix_surface; if (!core || !stem) return core + (stem || ''); const coreLast = core.slice(-1).toLowerCase(); const stemFirst = stem[0].toLowerCase(); if (coreLast === stemFirst) return core + stem.slice(1); if (VOWELS.has(coreLast) && VOWELS.has(stemFirst)) return core.slice(0, -1) + stem; return core + stem; };
             const assemble_prefix = (prefix_key, stem) => join(assimilate(prefix_key, stem), stem);
-            const naive_inflect = (base) => { if (base.endsWith("e") && base !== "be") { return { base: base, present: base.slice(0, -1) + "ing", past: base + "d", participle: base + "d", adjective: base + "able" }; } return { base: base, present: base + "ing", past: base + "ed", participle: base + "ed", adjective: base + "able" }; };
             
-            // --- Definition Logic ---
+            const naive_inflect = (base) => {
+                 if (!base) return {};
+                 const s = (base.endsWith('s') || base.endsWith('x') || base.endsWith('z') || base.endsWith('ch') || base.endsWith('sh')) ? 'es' : 's';
+                 const past = base.endsWith('e') ? base + 'd' : base + 'ed';
+                 return {
+                    base: base, present_singular: base + s, past_simple: past, past_participle: past,
+                    present_participle: base.endsWith('e') ? base.slice(0, -1) + 'ing' : base + 'ing',
+                    adjective: base.endsWith('e') ? base.slice(0,-1) + 'able' : base + 'able'
+                };
+            };
+            
+            // --- Definition Logic (Full Implementation) ---
             const instantiateOriginalDefinition = (template, forms) => {
                 let t = String(template || "").trim();
-                if (!t) return `An act or state related to ${forms.present}.`;
-
-                const repl = { base: forms.base || "", present: forms.present || "", past: forms.past || "", adjective: forms.adjective || "", plural: (forms.base || "") + "s" };
-                for (const [key, value] of Object.entries(repl)) {
-                    t = t.replace(new RegExp(`{${key}}`, 'g'), value);
+                if (!t) return `An act or state related to ${forms.present_participle || forms.base}.`;
+                const repl = { 
+                    base: forms.base || "", present: forms.present_participle || "", past: forms.past_participle || "", 
+                    adjective: forms.adjective || "", plural: (forms.base || "") + "s" 
+                };
+                for (const key in repl) {
+                    t = t.replace(new RegExp(`{${key}}`, 'g'), repl[key]);
                 }
-                return t ? t.trim().replace(/\.$/, "") + "." : "";
+                return t ? t.trim().replace(/\.$/, "") + "." : `State of ${forms.present_participle || forms.base}.`;
             };
-
+            
             const generateMemeDefinition = (prefixKey, suffixKey, forms) => {
                 const fullSuffixKey = `-${suffixKey}`;
-                const prefixData = memePrefixes ? memePrefixes[prefixKey] : null;
-                const suffixData = memeSuffixes ? memeSuffixes[fullSuffixKey] : null;
-
-                if (!suffixData || !suffixData.definition_template) {
-                    return null;
-                }
-
+                const prefixData = allData.memePrefixes ? allData.memePrefixes[prefixKey] : null;
+                const suffixData = allData.memeSuffixes ? allData.memeSuffixes[fullSuffixKey] : null;
+                if (!suffixData || !suffixData.definition_template) return null;
                 const modifier = (prefixData && prefixData.modifier_phrase) ? prefixData.modifier_phrase : "";
                 let definition = suffixData.definition_template;
-
-                for (const formName in forms) {
-                    const placeholder = `{${formName}}`;
-                    const modifiedForm = modifier ? `${modifier} ${forms[formName]}` : forms[formName];
-                    definition = definition.replace(new RegExp(placeholder, 'g'), modifiedForm);
+                const formMapping = {
+                    '{base}': forms.base, '{present}': forms.present_participle, '{past}': forms.past_participle,
+                    '{plural}': (forms.base || "") + "s", '{adjective}': forms.adjective,
+                };
+                for (const placeholder in formMapping) {
+                    if (definition.includes(placeholder)) {
+                        const formWord = formMapping[placeholder] || forms.base;
+                        const modifiedForm = modifier ? `${modifier} ${formWord}` : formWord;
+                        definition = definition.replace(new RegExp(placeholder.replace(/\{|\}/g, '\\$&'), 'g'), modifiedForm);
+                    }
                 }
-                
                 if (definition) {
                     definition = definition.charAt(0).toUpperCase() + definition.slice(1);
                     if (!definition.endsWith('.')) definition += '.';
                 }
-
                 return definition;
             };
 
             // --- Generation and Display Logic ---
-            const generateAndDisplay = (base) => {
-                if (!base) return;
-
-                loaderOverlay.style.display = 'flex';
-                wordIndex.classList.add('loading');
-                updateStatus(`Generating forms for "${base}"...`);
+            function generateAndDisplay(wordData) {
+                if (isGenerating) return;
+                setLoading(true, `Generating for "${wordData.base}"...`);
                 
-                // Use a short timeout to allow the UI to update before the heavy computation starts
                 setTimeout(() => {
+                    let forms;
                     try {
-                        const verbsLookup = verbsData.reduce((acc, row) => { if (row.base) acc[row.base.toLowerCase()] = row; return acc; }, {});
-                        const all_rows = [];
-                        const bucket = new Map();
-                        const forms = verbsLookup[base.toLowerCase()] || naive_inflect(base);
-                        if (!forms.present) forms.present = naive_inflect(base).present;
-
-                        for (const srow of suffixesData) {
-                            const suf = srow.suffix || "";
-                            const prex_tokens = (srow.prex || "").split(' ').filter(Boolean);
-                            if (prex_tokens.length === 0) prex_tokens.push("");
-                            const linkers = (srow.linkers || "").split(' ');
-                            const pog = srow.part_of_grammar || "";
-                            for (const px of prex_tokens) {
-                                const stem = forms.base + px;
-                                for (const pref_row of prefixesData) {
-                                    const pref_key = pref_row.prefix;
-                                    if (!pref_key) continue;
-                                    const fam = pref_row.alias_of || pref_key;
-                                    
-                                    let definition = generateMemeDefinition(fam, suf, forms);
-                                    // Fallback to original definition logic
-                                    if (!definition) {
-                                        definition = instantiateOriginalDefinition(srow.definition, forms);
-                                    }
-
-                                    const variants = new Set();
-                                    for (const L of linkers) {
-                                        variants.add(assemble_prefix(pref_key, stem) + (L + suf));
-                                    }
-                                    const concept_key = [fam, suf, px, pog, definition].join('||');
-                                    if (!bucket.has(concept_key)) {
-                                        bucket.set(concept_key, {
-                                            forms: new Set(),
-                                            meta: { part_of_grammar: pog, prefix_family: fam, prefix_input_example: pref_key, prex: px, suffix: suf, definition: definition, ...forms }
-                                        });
-                                    }
-                                    variants.forEach(v => bucket.get(concept_key).forms.add(v));
-                                }
+                        const version = currentSettings.dictVersion;
+                        const verbsLookup = allData.verbs.reduce((acc, row) => { 
+                            if (row.base) {
+                                acc[row.base.toLowerCase()] = { base: row.base, present_participle: row.present, past_simple: row.past, past_participle: row.participle, adjective: row.adjective };
                             }
+                            return acc; 
+                        }, {});
+
+                        if (wordData.base && verbsLookup[wordData.base.toLowerCase()]) {
+                            const dbForms = verbsLookup[wordData.base.toLowerCase()];
+                            forms = { ...naive_inflect(dbForms.base), ...dbForms };
+                        } else if (wordData.base) {
+                            forms = naive_inflect(wordData.base);
+                        } else {
+                            forms = wordData; // From unlisted panel
                         }
-
-                        for (const value of bucket.values()) {
-                            const formList = Array.from(value.forms).sort((a, b) => a.length - b.length);
-                            if (formList.length > 0) {
-                                all_rows.push({ form: formList[0], aka_forms: formList.slice(1).join(', '), ...value.meta });
-                            }
+                        
+                        let all_rows = [];
+                        if (version === 'all') {
+                            all_rows = generateAllVariations(forms);
+                        } else {
+                            all_rows = generateFromSuffixList(forms, version);
                         }
-
-                        lastResults = all_rows.sort((a, b) => a.form.localeCompare(b.form));
-                        displayPrintLayout(lastResults, base);
-
+                        
+                        lastResults = all_rows;
+                        displayPrintLayout(lastResults);
+                        updateStatus(`Displayed ${lastResults.length} forms for "${forms.base}".`);
                     } catch (error) {
-                        updateStatus(`Error during generation: ${error.message}`, true);
-                        resultsContainer.innerHTML = '<div class="placeholder">An error occurred.</div>';
+                        updateStatus(`Generation Error: ${error.message}`, true);
+                        dom.resultsContainer.innerHTML = `<div class="placeholder">An error occurred.</div>`;
                     } finally {
-                        loaderOverlay.style.display = 'none';
-                        wordIndex.classList.remove('loading');
+                        setLoading(false);
                     }
                 }, 10);
-            };
+            }
 
-            const escapeHtml = (unsafe) => unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-
-            const displayPrintLayout = (rows, base) => {
-                if (rows.length === 0) {
-                    resultsContainer.innerHTML = '<div class="placeholder">No definitions could be generated for this word.</div>';
-                    updateStatus(`No definitions found for "${base}".`);
-                    downloadBtn.classList.add('hidden');
-                    return;
+            function generateFromSuffixList(forms, version) {
+                const bucket = new Map();
+                
+                // 1. Generate Prefix + Base + Suffix
+                for (const srow of allData.suffixes) {
+                    const suf = srow.suffix || "";
+                    if (!suf) continue;
+                    const prex_tokens = srow.prex ? srow.prex.split(' ') : [""];
+                    const linkers = (srow.linkers || "").split(' ');
+                    const pog = srow.part_of_grammar || "";
+                    for (const px of prex_tokens) {
+                        const stem = forms.base + px;
+                        for (const pref_row of allData.prefixes) {
+                            const pref_key = pref_row.prefix;
+                            if (!pref_key) continue;
+                            const fam = pref_row.alias_of || pref_key;
+                            let definition = null;
+                            if (version === 'v2' || version === 'hybrid') { definition = generateMemeDefinition(fam, suf, forms); }
+                            if (!definition && (version === 'v1' || version === 'hybrid')) { definition = instantiateOriginalDefinition(srow.definition, forms); }
+                            if (!definition) continue;
+                            const variants = new Set(linkers.map(L => assemble_prefix(pref_key, stem) + (L + suf)));
+                            const concept_key = [fam, suf, px, pog, definition].join('||');
+                            if (!bucket.has(concept_key)) {
+                                bucket.set(concept_key, { forms: new Set(), meta: { part_of_grammar: pog, prefix_family: fam, prefix_input_example: pref_key, prex: px, suffix: suf, definition: definition, ...forms } });
+                            }
+                            variants.forEach(v => bucket.get(concept_key).forms.add(v));
+                        }
+                    }
                 }
                 
-                let entries_html = '';
-                for (const row of rows) {
-                    const word = escapeHtml(row.form || "");
-                    const pog = escapeHtml(row.part_of_grammar || "");
-                    const definition = escapeHtml(row.definition || "");
-                    const pf = escapeHtml(row.prefix_family || "");
-                    const pie = escapeHtml(row.prefix_input_example || "");
-                    const baseWord = escapeHtml(row.base || "");
-                    const prex = escapeHtml(row.prex || "");
-                    const suffix = escapeHtml(row.suffix || "");
-                    const aka = escapeHtml(row.aka_forms || "");
-
-                    const pog_short = pog ? pog.substring(0, 1) : "";
-                    let parts = [`<span class="w">${word}</span>`];
-                    if (pog_short) parts.push(`<i class="p">(${pog_short})</i>`);
-                    if (definition) parts.push(`<span class="d">${definition}</span>`);
-                    
-                    const trail_elems = [pf, pie, baseWord, prex, suffix].filter(Boolean);
-                    if (trail_elems.length > 0) parts.push(`<span class="t">${trail_elems.join(' · ')}</span>`);
-                    if (aka) parts.push(` \\ <span class="aka">*</span><span class="aka akac">${aka}</span><span class="aka">*</span> \\ `);
-                    
-                    entries_html += `<div class="e">${parts.join(' ')}</div>`;
+                // 2. Generate Base + Suffix
+                for (const srow of allData.suffixes) {
+                    const suf = srow.suffix || "";
+                    if (!suf) continue;
+                    const pog = srow.part_of_grammar || "";
+                    let definition = null;
+                    if (version === 'v2' || version === 'hybrid') { definition = generateMemeDefinition('', suf, forms); }
+                    if (!definition && (version === 'v1' || version === 'hybrid')) { definition = instantiateOriginalDefinition(srow.definition, forms); }
+                    if (!definition) continue;
+                    const final_word = forms.base + suf;
+                    const concept_key = ['', suf, '', pog, definition].join('||');
+                    if (!bucket.has(concept_key)) {
+                        bucket.set(concept_key, { forms: new Set(), meta: { part_of_grammar: pog, prefix_family: '', prex: '', suffix: suf, definition: definition, ...forms } });
+                    }
+                    bucket.get(concept_key).forms.add(final_word);
                 }
 
-                resultsContainer.innerHTML = `<div class="spread">${entries_html}</div>`;
-                updateStatus(`Displayed ${rows.length} forms for "${base}".`);
-                downloadBtn.classList.remove('hidden');
-            };
+                // 3. Generate Prefix + Base
+                for (const pref_row of allData.prefixes) {
+                    const pref_key = pref_row.prefix;
+                    if (!pref_key) continue;
+                    const fam = pref_row.alias_of || pref_key;
+                    let definition = null;
+                    const modifier = allData.memePrefixes[fam]?.modifier_phrase;
+                    if (modifier) {
+                        definition = `The act of applying the concept of '${modifier}' to ${forms.base}.`;
+                        definition = definition.charAt(0).toUpperCase() + definition.slice(1);
+                    } else if (version !== 'v2') {
+                         definition = `Relating to ${fam}${forms.base}.`;
+                    }
+                    if(!definition) continue;
+                    const final_word = assemble_prefix(pref_key, forms.base);
+                    const concept_key = [fam, '', '', 'verb', definition].join('||');
+                    if (!bucket.has(concept_key)) {
+                        bucket.set(concept_key, { forms: new Set(), meta: { part_of_grammar: 'verb', prefix_family: fam, prefix_input_example: pref_key, prex: '', suffix: '', definition: definition, ...forms } });
+                    }
+                    bucket.get(concept_key).forms.add(final_word);
+                }
 
-            const downloadCSV = () => {
+                return processBucket(bucket);
+            }
+            
+            function generateAllVariations(forms) {
+                const bucket = new Map();
+                 for(const pref_key in allData.memePrefixes) {
+                     for(const suf_key_with_dash in allData.memeSuffixes) {
+                         const suf_key = suf_key_with_dash.substring(1);
+                         const definition = generateMemeDefinition(pref_key, suf_key, forms);
+                         if(!definition) continue;
+                         const pog = allData.memeSuffixes[suf_key_with_dash].part_of_speech || "";
+                         const final_word = pref_key.replace('-','') + forms.base + suf_key;
+                         const concept_key = [pref_key, suf_key, pog, definition].join('||');
+                          if (!bucket.has(concept_key)) {
+                                bucket.set(concept_key, { forms: new Set(), meta: { part_of_grammar: pog, prefix_family: pref_key, suffix: suf_key, definition: definition, ...forms } });
+                            }
+                          bucket.get(concept_key).forms.add(final_word);
+                     }
+                 }
+                return processBucket(bucket);
+            }
+
+            function processBucket(bucket) {
+                const all_rows = [];
+                for (const value of bucket.values()) {
+                    const formList = Array.from(value.forms).sort((a, b) => a.length - b.length);
+                    if (formList.length > 0) {
+                        all_rows.push({ form: formList[0], aka_forms: formList.slice(1).join(', '), ...value.meta });
+                    }
+                }
+                return all_rows;
+            }
+
+            const escapeHtml = (unsafe) => unsafe ? unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;") : "";
+
+            function displayPrintLayout(rows) {
+                if (rows.length === 0) {
+                    dom.resultsContainer.innerHTML = '<div class="placeholder">No definitions generated.</div>';
+                    dom.downloadBtn.classList.add('hidden');
+                    return;
+                }
+                const sortType = dom.resultSort.value;
+                let sortedRows = [...rows];
+                if(sortType === 'alpha') sortedRows.sort((a,b) => a.form.localeCompare(b.form));
+                if(sortType === 'len-asc') sortedRows.sort((a,b) => a.form.length - b.form.length);
+                if(sortType === 'random') sortedRows.sort(() => Math.random() - 0.5);
+
+                let entries_html = sortedRows.map(row => {
+                    const parts = [
+                        `<span class="w">${escapeHtml(row.form || "")}</span>`,
+                        row.part_of_grammar ? `<i class="p">(${(row.part_of_grammar || "").substring(0, 1)})</i>` : '',
+                        `<span class="d">${escapeHtml(row.definition || "")}</span>`,
+                    ];
+                    const trail_elems = [row.prefix_family, row.prefix_input_example, row.base, row.prex, row.suffix].filter(Boolean);
+                    if (trail_elems.length) parts.push(`<span class="t">${trail_elems.map(escapeHtml).join(' · ')}</span>`);
+                    if (row.aka_forms) parts.push(` \\ <span class="aka">*</span><span class="aka akac">${escapeHtml(row.aka_forms)}</span><span class="aka">*</span> \\ `);
+                    return `<div class="e">${parts.filter(Boolean).join(' ')}</div>`;
+                }).join('');
+                
+                dom.resultsContainer.innerHTML = `<div class="spread">${entries_html}</div>`;
+                dom.downloadBtn.classList.remove('hidden');
+            }
+            
+            dom.downloadBtn.addEventListener('click', () => {
                 if (lastResults.length === 0) return;
-                const activeWord = wordIndex.querySelector('.active')?.dataset.word || 'morphgen';
+                const activeWord = dom.wordIndex.querySelector('.active')?.dataset.word || document.getElementById('base-form').value || 'morphgen';
                 const csv = Papa.unparse(lastResults);
                 const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement('a');
@@ -620,27 +859,15 @@
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
-            };
-
-            downloadBtn.addEventListener('click', downloadCSV);
-
-            // --- Theme Toggle Logic ---
-            themeToggle.addEventListener('click', () => {
-                document.body.classList.toggle('dark-mode');
-                if (document.body.classList.contains('dark-mode')) {
-                    localStorage.setItem('theme', 'dark');
-                } else {
-                    localStorage.removeItem('theme');
-                }
             });
-
-            // Apply saved theme on load
+            
+            dom.themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+            });
             if (localStorage.getItem('theme') === 'dark') {
                 document.body.classList.add('dark-mode');
             }
-
-            // Start the application
-            initialize();
         });
     </script>
 </body>
