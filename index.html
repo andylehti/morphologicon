@@ -634,6 +634,19 @@
             };
             
             // --- Definition Logic (Full Implementation) ---
+             const generatePrefixOnlyDefinition = (modifier, forms) => {
+                if (!modifier) return `A version of ${forms.base}.`;
+                let definition;
+                if (modifier === 'former') {
+                    definition = `Pertaining to a former state of ${forms.base}.`;
+                } else if (modifier.endsWith('ly')) {
+                    definition = `To ${modifier} ${forms.base}.`;
+                } else {
+                    definition = `Characterized by being ${modifier} ${forms.base}.`;
+                }
+                return definition.charAt(0).toUpperCase() + definition.slice(1);
+            };
+            
             const instantiateOriginalDefinition = (template, forms) => {
                 let t = String(template || "").trim();
                 if (!t) return `An act or state related to ${forms.present_participle || forms.base}.`;
@@ -649,10 +662,9 @@
             
             const generateMemeDefinition = (prefixKey, suffixKey, forms) => {
                 const fullSuffixKey = `-${suffixKey}`;
-                const prefixData = allData.memePrefixes ? allData.memePrefixes[prefixKey] : null;
                 const suffixData = allData.memeSuffixes ? allData.memeSuffixes[fullSuffixKey] : null;
                 if (!suffixData || !suffixData.definition_template) return null;
-                const modifier = (prefixData && prefixData.modifier_phrase) ? prefixData.modifier_phrase : "";
+                
                 let definition = suffixData.definition_template;
                 const formMapping = {
                     '{base}': forms.base, '{present}': forms.present_participle, '{past}': forms.past_participle,
@@ -661,8 +673,7 @@
                 for (const placeholder in formMapping) {
                     if (definition.includes(placeholder)) {
                         const formWord = formMapping[placeholder] || forms.base;
-                        const modifiedForm = modifier ? `${modifier} ${formWord}` : formWord;
-                        definition = definition.replace(new RegExp(placeholder.replace(/\{|\}/g, '\\$&'), 'g'), modifiedForm);
+                        definition = definition.replace(new RegExp(placeholder.replace(/\{|\}/g, '\\$&'), 'g'), formWord);
                     }
                 }
                 if (definition) {
@@ -770,13 +781,16 @@
                     const fam = pref_row.alias_of || pref_key;
                     let definition = null;
                     const modifier = allData.memePrefixes[fam]?.modifier_phrase;
-                    if (modifier) {
-                        definition = `The act of applying the concept of '${modifier}' to ${forms.base}.`;
-                        definition = definition.charAt(0).toUpperCase() + definition.slice(1);
-                    } else if (version !== 'v2') {
+                    
+                    if (version === 'v2' || version === 'hybrid') {
+                        if(modifier) definition = generatePrefixOnlyDefinition(modifier, forms);
+                    } 
+                    if (!definition && (version === 'v1' || version === 'hybrid')) {
                          definition = `Relating to ${fam}${forms.base}.`;
                     }
+
                     if(!definition) continue;
+
                     const final_word = assemble_prefix(pref_key, forms.base);
                     const concept_key = [fam, '', '', 'verb', definition].join('||');
                     if (!bucket.has(concept_key)) {
