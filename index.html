@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MorphGen Interactive Dictionary</title>
-    <!-- Library for reading CSV files -->
+    <title>Morphologicon Engine</title>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,13 +12,13 @@
     <style>
         :root {
             --base-font-size: 10pt;
-            --aka-font-size: 6pt;
+            --aka-font-size: 8.25pt;
             --line-height: 1.18;
             --cols: 5;
             --col-gap: 8mm;
             --page-margin: 8mm;
             
-            /* Light Theme */
+            
             --bg-color: #f4f7f9;
             --panel-bg: #ffffff;
             --text-color: #333;
@@ -33,7 +33,7 @@
         }
 
         .dark-mode {
-            /* Dark Theme */
+            
             --bg-color: #121212;
             --panel-bg: #1e1e1e;
             --text-color: #e0e0e0;
@@ -78,7 +78,7 @@
              main { height: auto; overflow: visible; }
         }
 
-        /* --- Settings Overlay --- */
+        
         #settings-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -182,7 +182,7 @@
         }
 
 
-        /* --- Main UI --- */
+        
         .sidebar {
             width: 300px;
             background: var(--panel-bg);
@@ -285,8 +285,11 @@
         .p { font-style: italic; font-weight: 400; opacity: .85; }
         .d { font-weight: 400; }
         .t { opacity: .8; }
-        .aka { font-size: var(--aka-font-size); font-style: italic; color: #444; }
-        .akac { letter-spacing: .1px; }
+        .entry-main { display: block; }
+        .aka-row { display: block; margin: .12em 0 .04em .7em; line-height: 1.08; font-size: var(--aka-font-size); font-weight: 600; color: var(--text-color); opacity: .88; }
+        .aka { font-style: italic; }
+        .akac { letter-spacing: .15px; }
+        .aka-mark { font-style: normal; font-weight: 700; }
 
         @media screen and (max-width: 1600px) { .spread { column-count: 4; } }
         @media screen and (max-width: 1200px) { .spread { column-count: 3; } }
@@ -311,15 +314,6 @@
             </div>
             <div class="settings-controls">
                 <div class="settings-group">
-                    <label for="setting-dict-version">Dictionary Engine</label>
-                    <select id="setting-dict-version">
-                        <option value="hybrid">Hybrid (Recommended)</option>
-                        <option value="v1">Version 1 (Original)</option>
-                        <option value="v2">Version 2 (New Templates)</option>
-                        <option value="all">All Variations (Experimental)</option>
-                    </select>
-                </div>
-                <div class="settings-group">
                     <label for="setting-word-sort">Word Index Sorting</label>
                     <select id="setting-word-sort">
                         <option value="random">Randomize</option>
@@ -332,6 +326,11 @@
                     <select id="setting-result-sort">
                         <option value="len-asc">Length (Short to Long)</option>
                         <option value="alpha">Alphabetical</option>
+                        <option value="suffix-prefix-combined">Suffixes → Prefixes → Prefix + Suffix</option>
+                        <option value="prefix-suffix-combined">Prefixes → Suffixes → Prefix + Suffix</option>
+                        <option value="suffix-prefix-linker">By Suffix → Prefix → Suffix Prefix</option>
+                        <option value="prefix-suffix-linker">By Prefix → Suffix → Suffix Prefix</option>
+                        <option value="pos-alpha">Part of Speech → Alphabetical</option>
                         <option value="random">Randomize</option>
                      </select>
                 </div>
@@ -374,8 +373,13 @@
                     <label for="resultSort">Sort Results:</label>
                     <select id="resultSort">
                        <option value="len-asc">Length (Short to Long)</option>
-                       <option value="alpha">Alphabetical</option>
-                       <option value="random">Randomize</option>
+                        <option value="alpha">Alphabetical</option>
+                        <option value="suffix-prefix-combined">Suffixes → Prefixes → Prefix + Suffix</option>
+                        <option value="prefix-suffix-combined">Prefixes → Suffixes → Prefix + Suffix</option>
+                        <option value="suffix-prefix-linker">By Suffix → Prefix → Suffix Prefix</option>
+                        <option value="prefix-suffix-linker">By Prefix → Suffix → Suffix Prefix</option>
+                        <option value="pos-alpha">Part of Speech → Alphabetical</option>
+                        <option value="random">Randomize</option>
                     </select>
                 </div>
                 <div class="header-group">
@@ -389,501 +393,7 @@
         </main>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // State variables
-            let allData = { verbs: null, prefixes: null, suffixes: null, memePrefixes: null, memeSuffixes: null };
-            let lastResults = [];
-            let allBaseWords = [];
-            let isGenerating = false;
-            let currentSettings = {};
-
-            // DOM Elements
-            const dom = {
-                status: document.getElementById('status'),
-                downloadBtn: document.getElementById('downloadBtn'),
-                resultsContainer: document.getElementById('resultsContainer'),
-                wordIndex: document.getElementById('wordIndex'),
-                wordFilter: document.getElementById('wordFilter'),
-                themeToggle: document.getElementById('themeToggle'),
-                loaderOverlay: document.querySelector('.loader-overlay'),
-                toggleUnlistedBtn: document.getElementById('toggleUnlistedBtn'),
-                unlistedWordPanel: document.getElementById('unlistedWordPanel'),
-                autoFillBtn: document.getElementById('autoFillBtn'),
-                generateUnlistedBtn: document.getElementById('generateUnlistedBtn'),
-                otherFormsContainer: document.getElementById('other-forms-container'),
-                resultSort: document.getElementById('resultSort'),
-                settingsOverlay: document.getElementById('settings-overlay'),
-                startAppBtn: document.getElementById('start-app-btn'),
-                settingDictVersion: document.getElementById('setting-dict-version'),
-                settingWordSort: document.getElementById('setting-word-sort'),
-                settingResultSort: document.getElementById('setting-result-sort'),
-                mainUI: document.querySelector('.main-ui')
-            };
-
-            const DATA_URLS = {
-                verbs: 'https://raw.githubusercontent.com/andylehti/morphologicon/main/build/verbFullList.csv',
-                prefixes: 'https://raw.githubusercontent.com/andylehti/morphologicon/main/build/prefixes.csv',
-                suffixes: 'https://raw.githubusercontent.com/andylehti/morphologicon/main/build/completeSuffixes.csv',
-                morphmemes: 'https://raw.githubusercontent.com/andylehti/morphologicon/main/build/morphmemes.json'
-            };
-
-            const updateStatus = (message, isError = false) => {
-                dom.status.textContent = message;
-                dom.status.style.color = isError ? '#e74c3c' : 'var(--text-color)';
-            };
-
-            // --- App Startup ---
-            dom.startAppBtn.addEventListener('click', startup);
-            window.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && !dom.settingsOverlay.classList.contains('hidden')) {
-                    startup();
-                }
-            });
-
-            function startup() {
-                currentSettings = {
-                    dictVersion: dom.settingDictVersion.value,
-                    wordSort: dom.settingWordSort.value,
-                    resultSort: dom.settingResultSort.value
-                };
-                dom.resultSort.value = currentSettings.resultSort; // Sync main UI sort with setting
-                dom.settingsOverlay.classList.add('hidden');
-                dom.mainUI.classList.remove('hidden');
-                initialize();
-            }
-
-            // --- Data Fetching & Initialization ---
-            async function fetchResource(url, type = 'csv') {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`Fetch failed for ${url}: ${response.statusText}`);
-                if (type === 'json') return await response.json();
-                
-                const text = await response.text();
-                return new Promise(resolve => {
-                    Papa.parse(text, {
-                        header: true, skipEmptyLines: true,
-                        complete: (results) => resolve(results.data.map(row => {
-                            for (let key in row) row[key] = String(row[key] || '');
-                            return row;
-                        })),
-                    });
-                });
-            }
-
-            async function initialize() {
-                try {
-                    setLoading(true, 'Fetching all data...');
-                    const [verbs, rawPrefixes, rawSuffixes, memes] = await Promise.all([
-                        fetchResource(DATA_URLS.verbs), fetchResource(DATA_URLS.prefixes),
-                        fetchResource(DATA_URLS.suffixes), fetchResource(DATA_URLS.morphmemes, 'json'),
-                    ]);
-
-                    allData.verbs = verbs;
-                    const seen = new Set();
-                    allData.prefixes = rawPrefixes.filter(item => {
-                        const isDuplicate = seen.has(item.prefix);
-                        if(item.prefix) seen.add(item.prefix);
-                        return !isDuplicate;
-                    });
-                    allData.suffixes = ensureLinkersColumn(rawSuffixes);
-                    allData.memePrefixes = memes.prefixes;
-                    allData.memeSuffixes = memes.suffixes;
-
-                    allBaseWords = [...new Set(allData.verbs.map(v => v.base).filter(Boolean))];
-                    sortAndPopulateWordIndex();
-                    setupUnlistedPanel();
-                    updateStatus('Data loaded. Select a word.');
-                } catch (error) {
-                    updateStatus(`Initialization Error: ${error.message}`, true);
-                } finally {
-                    setLoading(false);
-                }
-            }
-            
-            // --- UI & Event Handlers ---
-            function setLoading(isLoading, message = '') {
-                isGenerating = isLoading;
-                dom.loaderOverlay.classList.toggle('hidden', !isLoading);
-                dom.wordIndex.classList.toggle('loading', isLoading);
-                if (message) updateStatus(message);
-            }
-
-            dom.wordFilter.addEventListener('input', sortAndPopulateWordIndex);
-            
-            dom.wordIndex.addEventListener('click', (e) => {
-                const target = e.target.closest('li');
-                if(target && !isGenerating) {
-                    const baseWord = target.dataset.word;
-                    const currentActive = dom.wordIndex.querySelector('.active');
-                    if(currentActive) currentActive.classList.remove('active');
-                    target.classList.add('active');
-                    dom.unlistedWordPanel.classList.remove('active');
-                    generateAndDisplay({ base: baseWord });
-                }
-            });
-            
-            dom.resultSort.addEventListener('change', () => {
-                displayPrintLayout(lastResults);
-            });
-
-            // --- Word Index Logic ---
-            function sortAndPopulateWordIndex() {
-                const sortType = currentSettings.wordSort;
-                const filterText = dom.wordFilter.value.toLowerCase();
-                let words = [...allBaseWords];
-
-                if (sortType === 'random') words.sort(() => Math.random() - 0.5);
-                else if (sortType === 'alpha') words.sort((a, b) => a.localeCompare(b));
-                else if (sortType === 'len-desc') words.sort((a, b) => b.length - a.length);
-
-                let indexHTML = words
-                    .filter(word => word.toLowerCase().startsWith(filterText))
-                    .map(word => `<li data-word="${word}">${word}</li>`)
-                    .join('');
-                dom.wordIndex.innerHTML = indexHTML;
-            }
-
-            // --- Unlisted Word Panel Logic ---
-            function setupUnlistedPanel() {
-                const formFields = [
-                    { key: 'present_singular', label: '3rd person singular present', placeholder: 'e.g., eats' },
-                    { key: 'past_simple', label: 'Past simple', placeholder: 'e.g., ate' },
-                    { key: 'past_participle', label: 'Past participle', placeholder: 'e.g., eaten' },
-                    { key: 'present_participle', label: 'Present participle / gerund', placeholder: 'e.g., eating' },
-                    { key: 'adjective', label: 'Derivative adjective', placeholder: 'e.g., eatable' }
-                ];
-
-                dom.otherFormsContainer.innerHTML = formFields.map(field => `
-                    <div class="form-group">
-                        <label for="${field.key}-form">${field.label}</label>
-                        <input type="text" id="${field.key}-form" data-key="${field.key}" placeholder="${field.placeholder}">
-                    </div>`).join('');
-
-                dom.toggleUnlistedBtn.addEventListener('click', () => dom.unlistedWordPanel.classList.toggle('active'));
-
-                dom.autoFillBtn.addEventListener('click', () => {
-                    const base = document.getElementById('base-form').value.trim();
-                    if (!base) { alert('Please enter a base word first.'); return; }
-                    const forms = naive_inflect(base);
-                    for (const key in forms) {
-                        const input = document.getElementById(`${key}-form`);
-                        if(input) input.value = forms[key] || '';
-                    }
-                });
-
-                dom.generateUnlistedBtn.addEventListener('click', () => {
-                    const forms = { base: document.getElementById('base-form').value.trim() };
-                    if (!forms.base) { alert('A base word is required.'); return; }
-                    
-                    dom.otherFormsContainer.querySelectorAll('input').forEach(input => {
-                        forms[input.dataset.key] = input.value.trim();
-                    });
-                    
-                    const currentActive = dom.wordIndex.querySelector('.active');
-                    if (currentActive) currentActive.classList.remove('active');
-                    generateAndDisplay(forms);
-                });
-            }
-
-            // --- Linker & Morph Engine (Full Implementation) ---
-            const VOWELS = new Set("aeiou");
-            const ensureLinkersColumn = (data) => {
-                if (!data || data.length === 0) return [];
-                const columns = Object.keys(data[0]);
-                if (!columns.includes("linkers")) {
-                    const linkerCandidates = columns.filter(c => {
-                        const name = c.toLowerCase();
-                        if (name.includes("unnamed") || name.includes("unused") || name.includes("linker")) return true;
-                        let okCount = 0;
-                        const relevantValues = data.map(row => row[c]).filter(Boolean);
-                        if (relevantValues.length === 0) return false;
-                        for (let val of relevantValues) {
-                            val = String(val).trim().toLowerCase();
-                            if (!val || /^[aeiou\s,|/.\-~∅Ø]+$/.test(val)) okCount++;
-                        }
-                        return okCount / relevantValues.length >= 0.8;
-                    });
-                    data.forEach(row => { row.linkers = linkerCandidates.map(c => row[c] || '').join(' '); });
-                }
-                data.forEach(row => {
-                    if (!row.linkers) row.linkers = '';
-                    const strV = String(row.linkers).toLowerCase().replace(/\n/g, " ");
-                    const tokens = strV.split(/[,\s|/.]+/).filter(t => t && Array.from(t).every(char => VOWELS.has(char)));
-                    let toks = [...new Set(tokens)];
-                    if (!toks.includes("")) toks.unshift("");
-                    row.linkers = toks.join(" ").substring(0, 10);
-                });
-                return data;
-            };
-
-            const ASSIMILATION_RULES = { "in-": { "r": "ir-", "l": "il-", "b": "im-", "p": "im-", "m": "im-" }, "ad-": { "c": "ac-", "q": "ac-", "f": "af-", "g": "ag-", "l": "al-", "n": "an-", "p": "ap-", "r": "ar-", "s": "as-", "t": "at-" }, "sub-": { "c": "suc-", "f": "suf-", "p": "sup-", "r": "sur-", "s": "sus-" }, "ex-": { "f": "ef-" }, "en-": { "b": "em-", "p": "em-" }, "co-": { "b": "com-", "p": "com-", "m": "com-", "r": "cor-" }, };
-            const assimilate = (prefix_key, stem) => { if (!stem || !stem[0]) return prefix_key; const first_char = stem[0].toLowerCase(); if (prefix_key === "a-" && VOWELS.has(first_char)) return "an-"; if (prefix_key === "ex-" && VOWELS.has(first_char)) return "e-"; if (prefix_key === "co-" && !"bpmr".includes(first_char)) return "con-"; if (ASSIMILATION_RULES[prefix_key]) { return ASSIMILATION_RULES[prefix_key][first_char] || prefix_key; } return prefix_key; };
-            const join = (prefix_surface, stem) => { const core = prefix_surface.endsWith('-') ? prefix_surface.slice(0, -1) : prefix_surface; if (!core || !stem) return core + (stem || ''); const coreLast = core.slice(-1).toLowerCase(); const stemFirst = stem[0].toLowerCase(); if (coreLast === stemFirst) return core + stem.slice(1); if (VOWELS.has(coreLast) && VOWELS.has(stemFirst)) return core.slice(0, -1) + stem; return core + stem; };
-            const assemble_prefix = (prefix_key, stem) => join(assimilate(prefix_key, stem), stem);
-            
-            const naive_inflect = (base) => {
-                 if (!base) return {};
-                 const s = (base.endsWith('s') || base.endsWith('x') || base.endsWith('z') || base.endsWith('ch') || base.endsWith('sh')) ? 'es' : 's';
-                 const past = base.endsWith('e') ? base + 'd' : base + 'ed';
-                 return {
-                    base: base, present_singular: base + s, past_simple: past, past_participle: past,
-                    present_participle: base.endsWith('e') ? base.slice(0, -1) + 'ing' : base + 'ing',
-                    adjective: base.endsWith('e') ? base.slice(0,-1) + 'able' : base + 'able'
-                };
-            };
-            
-            // --- Definition Logic (Full Implementation) ---
-             const generatePrefixOnlyDefinition = (modifier, forms) => {
-                if (!modifier) return `A version of ${forms.base}.`;
-                let definition;
-                if (modifier === 'former') {
-                    definition = `Pertaining to a former state of ${forms.base}.`;
-                } else if (modifier.endsWith('ly')) {
-                    definition = `To ${modifier} ${forms.base}.`;
-                } else {
-                    definition = `Characterized by being ${modifier} ${forms.base}.`;
-                }
-                return definition.charAt(0).toUpperCase() + definition.slice(1);
-            };
-            
-            const instantiateOriginalDefinition = (template, forms) => {
-                let t = String(template || "").trim();
-                if (!t) return `An act or state related to ${forms.present_participle || forms.base}.`;
-                const repl = { 
-                    base: forms.base || "", present: forms.present_participle || "", past: forms.past_participle || "", 
-                    adjective: forms.adjective || "", plural: (forms.base || "") + "s" 
-                };
-                for (const key in repl) {
-                    t = t.replace(new RegExp(`{${key}}`, 'g'), repl[key]);
-                }
-                return t ? t.trim().replace(/\.$/, "") + "." : `State of ${forms.present_participle || forms.base}.`;
-            };
-            
-            const generateMemeDefinition = (prefixKey, suffixKey, forms) => {
-                const fullSuffixKey = `-${suffixKey}`;
-                const suffixData = allData.memeSuffixes ? allData.memeSuffixes[fullSuffixKey] : null;
-                if (!suffixData || !suffixData.definition_template) return null;
-                
-                let definition = suffixData.definition_template;
-                const formMapping = {
-                    '{base}': forms.base, '{present}': forms.present_participle, '{past}': forms.past_participle,
-                    '{plural}': (forms.base || "") + "s", '{adjective}': forms.adjective,
-                };
-                for (const placeholder in formMapping) {
-                    if (definition.includes(placeholder)) {
-                        const formWord = formMapping[placeholder] || forms.base;
-                        definition = definition.replace(new RegExp(placeholder.replace(/\{|\}/g, '\\$&'), 'g'), formWord);
-                    }
-                }
-                if (definition) {
-                    definition = definition.charAt(0).toUpperCase() + definition.slice(1);
-                    if (!definition.endsWith('.')) definition += '.';
-                }
-                return definition;
-            };
-
-            // --- Generation and Display Logic ---
-            function generateAndDisplay(wordData) {
-                if (isGenerating) return;
-                setLoading(true, `Generating for "${wordData.base}"...`);
-                
-                setTimeout(() => {
-                    let forms;
-                    try {
-                        const version = currentSettings.dictVersion;
-                        const verbsLookup = allData.verbs.reduce((acc, row) => { 
-                            if (row.base) {
-                                acc[row.base.toLowerCase()] = { base: row.base, present_participle: row.present, past_simple: row.past, past_participle: row.participle, adjective: row.adjective };
-                            }
-                            return acc; 
-                        }, {});
-
-                        if (wordData.base && verbsLookup[wordData.base.toLowerCase()]) {
-                            const dbForms = verbsLookup[wordData.base.toLowerCase()];
-                            forms = { ...naive_inflect(dbForms.base), ...dbForms };
-                        } else if (wordData.base) {
-                            forms = naive_inflect(wordData.base);
-                        } else {
-                            forms = wordData; // From unlisted panel
-                        }
-                        
-                        let all_rows = [];
-                        if (version === 'all') {
-                            all_rows = generateAllVariations(forms);
-                        } else {
-                            all_rows = generateFromSuffixList(forms, version);
-                        }
-                        
-                        lastResults = all_rows;
-                        displayPrintLayout(lastResults);
-                        updateStatus(`Displayed ${lastResults.length} forms for "${forms.base}".`);
-                    } catch (error) {
-                        updateStatus(`Generation Error: ${error.message}`, true);
-                        dom.resultsContainer.innerHTML = `<div class="placeholder">An error occurred.</div>`;
-                    } finally {
-                        setLoading(false);
-                    }
-                }, 10);
-            }
-
-            function generateFromSuffixList(forms, version) {
-                const bucket = new Map();
-                
-                // 1. Generate Prefix + Base + Suffix
-                for (const srow of allData.suffixes) {
-                    const suf = srow.suffix || "";
-                    if (!suf) continue;
-                    const prex_tokens = srow.prex ? srow.prex.split(' ') : [""];
-                    const linkers = (srow.linkers || "").split(' ');
-                    const pog = srow.part_of_grammar || "";
-                    for (const px of prex_tokens) {
-                        const stem = forms.base + px;
-                        for (const pref_row of allData.prefixes) {
-                            const pref_key = pref_row.prefix;
-                            if (!pref_key) continue;
-                            const fam = pref_row.alias_of || pref_key;
-                            let definition = null;
-                            if (version === 'v2' || version === 'hybrid') { definition = generateMemeDefinition(fam, suf, forms); }
-                            if (!definition && (version === 'v1' || version === 'hybrid')) { definition = instantiateOriginalDefinition(srow.definition, forms); }
-                            if (!definition) continue;
-                            const variants = new Set(linkers.map(L => assemble_prefix(pref_key, stem) + (L + suf)));
-                            const concept_key = [fam, suf, px, pog, definition].join('||');
-                            if (!bucket.has(concept_key)) {
-                                bucket.set(concept_key, { forms: new Set(), meta: { part_of_grammar: pog, prefix_family: fam, prefix_input_example: pref_key, prex: px, suffix: suf, definition: definition, ...forms } });
-                            }
-                            variants.forEach(v => bucket.get(concept_key).forms.add(v));
-                        }
-                    }
-                }
-                
-                // 2. Generate Base + Suffix
-                for (const srow of allData.suffixes) {
-                    const suf = srow.suffix || "";
-                    if (!suf) continue;
-                    const pog = srow.part_of_grammar || "";
-                    let definition = null;
-                    if (version === 'v2' || version === 'hybrid') { definition = generateMemeDefinition('', suf, forms); }
-                    if (!definition && (version === 'v1' || version === 'hybrid')) { definition = instantiateOriginalDefinition(srow.definition, forms); }
-                    if (!definition) continue;
-                    const final_word = forms.base + suf;
-                    const concept_key = ['', suf, '', pog, definition].join('||');
-                    if (!bucket.has(concept_key)) {
-                        bucket.set(concept_key, { forms: new Set(), meta: { part_of_grammar: pog, prefix_family: '', prex: '', suffix: suf, definition: definition, ...forms } });
-                    }
-                    bucket.get(concept_key).forms.add(final_word);
-                }
-
-                // 3. Generate Prefix + Base
-                for (const pref_row of allData.prefixes) {
-                    const pref_key = pref_row.prefix;
-                    if (!pref_key) continue;
-                    const fam = pref_row.alias_of || pref_key;
-                    let definition = null;
-                    const modifier = allData.memePrefixes[fam]?.modifier_phrase;
-                    
-                    if (version === 'v2' || version === 'hybrid') {
-                        if(modifier) definition = generatePrefixOnlyDefinition(modifier, forms);
-                    } 
-                    if (!definition && (version === 'v1' || version === 'hybrid')) {
-                         definition = `Relating to ${fam}${forms.base}.`;
-                    }
-
-                    if(!definition) continue;
-
-                    const final_word = assemble_prefix(pref_key, forms.base);
-                    const concept_key = [fam, '', '', 'verb', definition].join('||');
-                    if (!bucket.has(concept_key)) {
-                        bucket.set(concept_key, { forms: new Set(), meta: { part_of_grammar: 'verb', prefix_family: fam, prefix_input_example: pref_key, prex: '', suffix: '', definition: definition, ...forms } });
-                    }
-                    bucket.get(concept_key).forms.add(final_word);
-                }
-
-                return processBucket(bucket);
-            }
-            
-            function generateAllVariations(forms) {
-                const bucket = new Map();
-                 for(const pref_key in allData.memePrefixes) {
-                     for(const suf_key_with_dash in allData.memeSuffixes) {
-                         const suf_key = suf_key_with_dash.substring(1);
-                         const definition = generateMemeDefinition(pref_key, suf_key, forms);
-                         if(!definition) continue;
-                         const pog = allData.memeSuffixes[suf_key_with_dash].part_of_speech || "";
-                         const final_word = pref_key.replace('-','') + forms.base + suf_key;
-                         const concept_key = [pref_key, suf_key, pog, definition].join('||');
-                          if (!bucket.has(concept_key)) {
-                                bucket.set(concept_key, { forms: new Set(), meta: { part_of_grammar: pog, prefix_family: pref_key, suffix: suf_key, definition: definition, ...forms } });
-                            }
-                          bucket.get(concept_key).forms.add(final_word);
-                     }
-                 }
-                return processBucket(bucket);
-            }
-
-            function processBucket(bucket) {
-                const all_rows = [];
-                for (const value of bucket.values()) {
-                    const formList = Array.from(value.forms).sort((a, b) => a.length - b.length);
-                    if (formList.length > 0) {
-                        all_rows.push({ form: formList[0], aka_forms: formList.slice(1).join(', '), ...value.meta });
-                    }
-                }
-                return all_rows;
-            }
-
-            const escapeHtml = (unsafe) => unsafe ? unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;") : "";
-
-            function displayPrintLayout(rows) {
-                if (rows.length === 0) {
-                    dom.resultsContainer.innerHTML = '<div class="placeholder">No definitions generated.</div>';
-                    dom.downloadBtn.classList.add('hidden');
-                    return;
-                }
-                const sortType = dom.resultSort.value;
-                let sortedRows = [...rows];
-                if(sortType === 'alpha') sortedRows.sort((a,b) => a.form.localeCompare(b.form));
-                if(sortType === 'len-asc') sortedRows.sort((a,b) => a.form.length - b.form.length);
-                if(sortType === 'random') sortedRows.sort(() => Math.random() - 0.5);
-
-                let entries_html = sortedRows.map(row => {
-                    const parts = [
-                        `<span class="w">${escapeHtml(row.form || "")}</span>`,
-                        row.part_of_grammar ? `<i class="p">(${(row.part_of_grammar || "").substring(0, 1)})</i>` : '',
-                        `<span class="d">${escapeHtml(row.definition || "")}</span>`,
-                    ];
-                    const trail_elems = [row.prefix_family, row.prefix_input_example, row.base, row.prex, row.suffix].filter(Boolean);
-                    if (trail_elems.length) parts.push(`<span class="t">${trail_elems.map(escapeHtml).join(' · ')}</span>`);
-                    if (row.aka_forms) parts.push(` \\ <span class="aka">*</span><span class="aka akac">${escapeHtml(row.aka_forms)}</span><span class="aka">*</span> \\ `);
-                    return `<div class="e">${parts.filter(Boolean).join(' ')}</div>`;
-                }).join('');
-                
-                dom.resultsContainer.innerHTML = `<div class="spread">${entries_html}</div>`;
-                dom.downloadBtn.classList.remove('hidden');
-            }
-            
-            dom.downloadBtn.addEventListener('click', () => {
-                if (lastResults.length === 0) return;
-                const activeWord = dom.wordIndex.querySelector('.active')?.dataset.word || document.getElementById('base-form').value || 'morphgen';
-                const csv = Papa.unparse(lastResults);
-                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `${activeWord}_results.csv`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            });
-            
-            dom.themeToggle.addEventListener('click', () => {
-                document.body.classList.toggle('dark-mode');
-                localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-            });
-            if (localStorage.getItem('theme') === 'dark') {
-                document.body.classList.add('dark-mode');
-            }
-        });
-    </script>
+    <script src="morphologicon-engine.js"></script>
 </body>
 </html>
 
