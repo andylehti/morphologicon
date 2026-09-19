@@ -244,11 +244,11 @@
             justify-content: space-between; align-items: center; gap: 15px;
             transition: background-color 0.3s, border-color 0.3s; flex-shrink: 0;
         }
-        .header-group { display: flex; align-items: center; gap: 10px; }
+        .header-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .header-group label { font-size: 0.9em; }
         .header-group select, .header-group button {
              background: var(--input-bg); border: 1px solid var(--border-color);
-             color: var(--text-color); padding: 5px 10px; cursor: pointer; border-radius: 4px;
+             color: var(--text-color); padding: 5px 9px; cursor: pointer; border-radius: 4px;
         }
         #status { font-style: italic; }
         #downloadBtn {
@@ -276,28 +276,37 @@
         }
         .placeholder { display: flex; justify-content: center; align-items: center; height: 100%; font-size: 1.2em; }
         .spread { column-count: var(--cols); column-gap: var(--col-gap); column-fill: balance; }
+        .spread.flow-across { column-count: initial; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: var(--col-gap); align-items: start; }
         .e {
             break-inside: avoid; font-size: var(--base-font-size);
-            line-height: var(--line-height); margin: 0 0 .30em 0;
-            word-break: break-word; hyphens: auto;
+            line-height: var(--line-height); margin: 0 0 .42em 0;
+            word-break: normal; overflow-wrap: normal; hyphens: none;
         }
-        .w { font-weight: 900; letter-spacing: .2px; }
-        .p { font-style: italic; font-weight: 400; opacity: .85; }
+        .w { font-weight: 900; letter-spacing: .2px; white-space: nowrap; }
+        .word-unit { white-space: nowrap; }
+        .p { font-style: italic; font-weight: 400; opacity: .85; white-space: nowrap; }
         .d { font-weight: 400; }
-        .t { opacity: .8; }
+        .t { opacity: .9; white-space: normal; }
+        .morph-row { display: block; margin-top: .05em; font-size: .94em; }
+        .morph-part { white-space: nowrap; }
+        .meaning-row { display: block; margin: .08em 0 .04em .7em; font-size: .88em; line-height: 1.12; opacity: .82; }
+        .meaning-item { white-space: normal; }
+        .meaning-key { font-weight: 700; white-space: nowrap; }
         .entry-main { display: block; }
-        .aka-row { display: block; margin: .12em 0 .04em .7em; line-height: 1.08; font-size: var(--aka-font-size); font-weight: 600; color: var(--text-color); opacity: .88; }
+        .aka-row { display: block; margin: .12em 0 .04em .7em; line-height: 1.08; font-size: var(--aka-font-size); font-weight: 600; color: var(--text-color); opacity: .92; }
+        .aka-label { font-style: italic; font-weight: 700; white-space: nowrap; }
         .aka { font-style: italic; }
         .akac { letter-spacing: .15px; }
-        .aka-mark { font-style: normal; font-weight: 700; }
+        .aka-form { white-space: nowrap; }
 
-        @media screen and (max-width: 1600px) { .spread { column-count: 4; } }
-        @media screen and (max-width: 1200px) { .spread { column-count: 3; } }
-        @media screen and (max-width: 900px) { .spread { column-count: 2; } }
+        @media screen and (max-width: 1600px) { .spread { column-count: 4; } .spread.flow-across { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+        @media screen and (max-width: 1200px) { .spread { column-count: 3; } .spread.flow-across { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        @media screen and (max-width: 900px) { .spread { column-count: 2; } .spread.flow-across { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
         @media screen and (max-width: 600px) {
             body { flex-direction: column; height: auto; overflow: auto; }
             .sidebar { width: 100%; height: 40vh; border-right: none; border-bottom: 1px solid var(--border-color); }
             .spread { column-count: 1; }
+            .spread.flow-across { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -331,6 +340,8 @@
                         <option value="suffix-prefix-linker">By Suffix → Prefix → Suffix Prefix</option>
                         <option value="prefix-suffix-linker">By Prefix → Suffix → Suffix Prefix</option>
                         <option value="pos-alpha">Part of Speech → Alphabetical</option>
+                        <option value="construction-pos-alpha">Structure → Part of Speech → Alphabetical</option>
+                        <option value="pos-construction-alpha">Part of Speech → Structure → Alphabetical</option>
                         <option value="random">Randomize</option>
                      </select>
                 </div>
@@ -370,16 +381,45 @@
             <div class="header-controls">
                 <div id="status">Loading data...</div>
                 <div class="header-group">
-                    <label for="resultSort">Sort Results:</label>
+                    <label for="resultSort">Sort:</label>
                     <select id="resultSort">
-                       <option value="len-asc">Length (Short to Long)</option>
+                        <option value="len-asc">Length (Short to Long)</option>
                         <option value="alpha">Alphabetical</option>
                         <option value="suffix-prefix-combined">Suffixes → Prefixes → Prefix + Suffix</option>
                         <option value="prefix-suffix-combined">Prefixes → Suffixes → Prefix + Suffix</option>
-                        <option value="suffix-prefix-linker">By Suffix → Prefix → Suffix Prefix</option>
-                        <option value="prefix-suffix-linker">By Prefix → Suffix → Suffix Prefix</option>
+                        <option value="suffix-prefix-linker">Suffix → Prefix → Linker</option>
+                        <option value="prefix-suffix-linker">Prefix → Suffix → Linker</option>
                         <option value="pos-alpha">Part of Speech → Alphabetical</option>
+                        <option value="construction-pos-alpha">Structure → Part of Speech → Alphabetical</option>
+                        <option value="pos-construction-alpha">Part of Speech → Structure → Alphabetical</option>
                         <option value="random">Randomize</option>
+                    </select>
+                    <label for="constructionFilter">Structure:</label>
+                    <select id="constructionFilter">
+                        <option value="all">All</option>
+                        <option value="prefix">Prefix only</option>
+                        <option value="suffix">Suffix only</option>
+                        <option value="combined">Prefix + Suffix only</option>
+                    </select>
+                    <label for="posFilter">POS:</label>
+                    <select id="posFilter">
+                        <option value="all">All</option>
+                        <option value="noun">Noun only</option>
+                        <option value="adjective">Adjective only</option>
+                        <option value="verb">Verb only</option>
+                        <option value="adverb">Adverb only</option>
+                        <option value="hybrid">Hybrid POS (2+)</option>
+                    </select>
+                    <label for="alternateFilter">Forms:</label>
+                    <select id="alternateFilter">
+                        <option value="all">All</option>
+                        <option value="with">With alternates</option>
+                        <option value="without">Without alternates</option>
+                    </select>
+                    <label for="layoutFlow">Flow:</label>
+                    <select id="layoutFlow">
+                        <option value="down">Down columns</option>
+                        <option value="across">Left to right</option>
                     </select>
                 </div>
                 <div class="header-group">

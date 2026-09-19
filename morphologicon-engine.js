@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     let allData = { verbs: [], verbsByBase: new Map(), verbWordSet: new Set(), prefixes: [], suffixes: [] };
     let lastResults = [];
+    let displayedResults = [];
     let allBaseWords = [];
     let isGenerating = false;
     let currentSettings = {};
@@ -19,6 +20,10 @@ document.addEventListener('DOMContentLoaded', () => {
         generateUnlistedBtn: document.getElementById('generateUnlistedBtn'),
         otherFormsContainer: document.getElementById('other-forms-container'),
         resultSort: document.getElementById('resultSort'),
+        constructionFilter: document.getElementById('constructionFilter'),
+        posFilter: document.getElementById('posFilter'),
+        alternateFilter: document.getElementById('alternateFilter'),
+        layoutFlow: document.getElementById('layoutFlow'),
         settingsOverlay: document.getElementById('settings-overlay'),
         startAppBtn: document.getElementById('start-app-btn'),
         settingWordSort: document.getElementById('setting-word-sort'),
@@ -45,24 +50,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const prefixDefinitions = {
         'a-': forms => `To be without ${forms.present_participle} or to refrain from it.`,
-        'anti-': forms => `To act against or oppose ${forms.present_participle}.`,
-        'auto-': forms => `To ${forms.base} by or upon oneself, or automatically.`,
-        'co-': forms => `To ${forms.base} together or in collaboration with another.`,
+        'anti-': forms => `To act against, resist, or oppose ${forms.present_participle}.`,
+        'auto-': forms => `To ${forms.base} by or upon oneself, or to do so automatically.`,
+        'co-': forms => `To ${forms.base} together, jointly, or in collaboration with another.`,
         'de-': forms => `To reverse or undo ${forms.present_participle}, or to reduce or remove its effect.`,
         'dis-': forms => `To reverse, undo, separate from, or move away from ${forms.present_participle}.`,
-        'en-': forms => `To put into, cover with, or cause a state associated with ${forms.present_participle}.`,
-        'ex-': forms => `To move out of or away from a state associated with ${forms.present_participle}.`,
-        'in-': forms => `To put into a state associated with ${forms.present_participle}; in its negative sense, to not ${forms.base}.`,
-        'non-': forms => `To not ${forms.base}; to refrain from ${forms.present_participle}.`,
+        'en-': forms => `To put into, cover with, or bring into a state associated with ${forms.present_participle}.`,
+        'ex-': forms => `To move out of, remove from, or away from a state associated with ${forms.present_participle}.`,
+        'in-': forms => `To put into or bring into a state associated with ${forms.present_participle}; in a negative use, to not ${forms.base}.`,
+        'non-': forms => `To not ${forms.base}, or to remain outside the act or state of ${forms.present_participle}.`,
         're-': forms => `To ${forms.base} again, back, or anew.`,
-        'sub-': forms => `To ${forms.base} beneath, below, or to a lesser degree.`,
-        'ad-': forms => `To ${forms.base} toward or in relation to something; also used as an intensifier.`
+        'sub-': forms => `To ${forms.base} beneath, below, under, or to a lesser degree.`,
+        'ad-': forms => `To ${forms.base} toward or in relation to something, sometimes with an intensive force.`
     };
 
     const posLabels = {
         verb: 'v', noun: 'n', adjective: 'adj', adverb: 'adv',
         'adjective/noun': 'adj/n', 'noun/adjective': 'n/adj',
-        'adjective/verb': 'adj/v', 'adjective/adverb': 'adj/adv', 'compound noun': 'n'
+        'adjective/verb': 'adj/v', 'verb/adjective': 'v/adj',
+        'adjective/adverb': 'adj/adv', 'adverb/adjective': 'adv/adj',
+        'compound noun': 'n'
     };
 
     const updateStatus = (message, isError = false) => {
@@ -169,6 +176,10 @@ document.addEventListener('DOMContentLoaded', () => {
         generateAndDisplay({ base: target.dataset.word });
     });
     dom.resultSort.addEventListener('change', () => displayPrintLayout(lastResults));
+    dom.constructionFilter.addEventListener('change', () => displayPrintLayout(lastResults));
+    dom.posFilter.addEventListener('change', () => displayPrintLayout(lastResults));
+    dom.alternateFilter.addEventListener('change', () => displayPrintLayout(lastResults));
+    dom.layoutFlow.addEventListener('change', () => displayPrintLayout(lastResults));
 
     function sortAndPopulateWordIndex() {
         const filterText = dom.wordFilter.value.toLowerCase();
@@ -313,6 +324,36 @@ document.addEventListener('DOMContentLoaded', () => {
         return `the senses ${senses.slice(0, -1).map(value => `“${value}”`).join(', ')}, or “${senses.at(-1)}”`;
     }
 
+    function senseList(values) {
+        const senses = [...new Set(values.filter(Boolean).map(value => String(value).trim().replace(/\//g, ' or ')))];
+        if (!senses.length) return '';
+        if (senses.length === 1) return senses[0];
+        if (senses.length === 2) return `${senses[0]} or ${senses[1]}`;
+        return `${senses.slice(0, -1).join(', ')}, or ${senses.at(-1)}`;
+    }
+
+    function prefixGloss(row) {
+        return senseList([row.sense_1, row.sense_2, row.sense_3, row.sense_4]);
+    }
+
+    function suffixGloss(row) {
+        let value = String(row.definition || '').trim().replace(/[.!?]+$/, '');
+        const repeated = value.match(/^(.+?) of \{(present|base|past|adjective|plural)\}, (.+?) of \{\2\}$/i);
+        const related = value.match(/^(.+?) related to \{(present|base|past|adjective|plural)\}, (.+?) of \{\2\}$/i);
+        if (repeated) value = `${repeated[1]} or ${repeated[3]}`;
+        else if (related) value = `${related[1]} or ${related[3]}`;
+        value = value
+            .replace(/\{present\}/gi, 'the stem action')
+            .replace(/\{base\}/gi, 'the stem')
+            .replace(/\{past\}/gi, 'the affected form')
+            .replace(/\{adjective\}/gi, 'the resulting quality')
+            .replace(/\{plural\}/gi, 'related forms')
+            .replace(/\bresembling of\b/gi, 'resembling')
+            .replace(/\s{2,}/g, ' ')
+            .trim();
+        return value ? value.charAt(0).toLowerCase() + value.slice(1) : '';
+    }
+
     function makePrefixDefinition(row, forms) {
         const prefix = normalizePrefix(row.prefix);
         const builder = prefixDefinitions[prefix];
@@ -329,9 +370,27 @@ document.addEventListener('DOMContentLoaded', () => {
         return /[.!?]$/.test(value) ? value : `${value}.`;
     }
 
+    function polishDefinition(text) {
+        let value = cleanDefinition(text);
+        if (!value) return '';
+        const mark = value.match(/[.!?]$/)?.[0] || '.';
+        const body = value.replace(/[.!?]$/, '');
+        const commas = (body.match(/,/g) || []).length;
+        if (commas === 1 && !/,\s*(?:and|or|but|including|especially|while|rather)\b/i.test(body)) value = `${body.replace(/,\s*/, ', or ')}${mark}`;
+        value = value
+            .replace(/, or reconstruction of /i, ', or a reconstruction of ')
+            .replace(/, or mental state of /i, ', or a mental state of ')
+            .replace(/, or laws of /i, ', or the laws of ')
+            .replace(/, or economy of /i, ', or the economy of ')
+            .replace(/, or state of /i, ', or a state of ')
+            .replace(/, or condition of /i, ', or a condition of ')
+            .replace(/, or quality of /i, ', or a quality of ');
+        return value;
+    }
+
     function instantiateDefinition(template, forms) {
         let text = String(template || '').trim();
-        if (!text) return `An act, state, or form related to ${forms.present_participle || forms.base}.`;
+        if (!text) return `An act, state, or form associated with ${forms.present_participle || forms.base}.`;
         const replacements = {
             base: forms.base || '',
             present: forms.present_participle || forms.base || '',
@@ -340,7 +399,30 @@ document.addEventListener('DOMContentLoaded', () => {
             plural: forms.present_singular || `${forms.base || ''}s`
         };
         for (const [key, value] of Object.entries(replacements)) text = text.replace(new RegExp(`\\{${key}\\}`, 'g'), value);
-        return cleanDefinition(text);
+        return polishDefinition(text);
+    }
+
+    function morphologyLine(prefix, base, linker, suffix) {
+        const parts = [];
+        if (prefix) parts.push(normalizePrefix(prefix));
+        if (base) parts.push(base);
+        if (linker) parts.push(`-${String(linker).replace(/^-+|-+$/g, '')}-`);
+        if (suffix) parts.push(`-${String(suffix).replace(/^-+/, '')}`);
+        return parts.join(' ');
+    }
+
+    function morphemeMeaningLine(prefixRow, suffixRow, linker) {
+        const items = [];
+        if (prefixRow) {
+            const gloss = prefixGloss(prefixRow);
+            if (gloss) items.push(`${normalizePrefix(prefixRow.prefix)} = ${gloss}`);
+        }
+        if (linker) items.push(`-${String(linker).replace(/^-+|-+$/g, '')}- = combining vowel`);
+        if (suffixRow) {
+            const gloss = suffixGloss(suffixRow);
+            if (gloss) items.push(`-${String(suffixRow.suffix).replace(/^-+/, '')} = ${gloss}`);
+        }
+        return items.join(' | ');
     }
 
     function stemBeforeVowelEnding(base) {
@@ -400,11 +482,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         for (const suffixRow of allData.suffixes) {
             const variants = suffixVariants(forms, suffixRow);
+            const primaryLinker = variants[0]?.linker || '';
             const definition = instantiateDefinition(suffixRow.definition, forms);
             addConcept(bucket, `base||${suffixRow.suffix}||${definition}`, variants.map(item => item.word), {
                 part_of_grammar: suffixRow.part_of_grammar || '', prefix_family: '', suffix: suffixRow.suffix, suffix_prefix: suffixRow.suffixPrefix || '',
-                linker: variants[0]?.linker || '', definition,
-                analysis: [forms.base, variants[0]?.linker || '', suffixRow.suffix].filter(Boolean).join(' · '), ...forms
+                linker: primaryLinker, definition,
+                analysis: morphologyLine('', forms.base, primaryLinker, suffixRow.suffix),
+                morpheme_meanings: morphemeMeaningLine(null, suffixRow, primaryLinker), ...forms
             });
         }
 
@@ -413,10 +497,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const surfaces = prefixSurfaces(prefix, forms.base);
             const canonicalForms = makePrefixedForms(prefix, forms);
             const prefixVariants = surfaces.map(surface => makePrefixedForms(surface, forms).base);
-            const prefixDefinition = cleanDefinition(makePrefixDefinition(prefixRow, forms));
+            const prefixDefinition = polishDefinition(makePrefixDefinition(prefixRow, forms));
             addConcept(bucket, `${prefix}||base||${prefixDefinition}`, prefixVariants, {
                 part_of_grammar: 'verb', prefix_family: prefix, suffix: '', suffix_prefix: '', linker: '', definition: prefixDefinition,
-                analysis: `${prefix} · ${forms.base}`, ...canonicalForms, source_base: forms.base
+                analysis: morphologyLine(prefix, forms.base, '', ''),
+                morpheme_meanings: morphemeMeaningLine(prefixRow, null, ''), ...canonicalForms, source_base: forms.base
             });
 
             for (const suffixRow of allData.suffixes) {
@@ -432,7 +517,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 addConcept(bucket, `${prefix}||${suffixRow.suffix}||${definition}`, combined, {
                     part_of_grammar: suffixRow.part_of_grammar || '', prefix_family: prefix, suffix: suffixRow.suffix, suffix_prefix: suffixRow.suffixPrefix || '',
                     linker: primaryLinker, definition,
-                    analysis: [prefix, forms.base, primaryLinker, suffixRow.suffix].filter(Boolean).join(' · '),
+                    analysis: morphologyLine(prefix, forms.base, primaryLinker, suffixRow.suffix),
+                    morpheme_meanings: morphemeMeaningLine(prefixRow, suffixRow, primaryLinker),
                     ...canonicalForms, source_base: forms.base
                 });
             }
@@ -468,7 +554,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const forms = normalizeForms(input);
                 lastResults = generateMorphologicon(forms);
                 displayPrintLayout(lastResults);
-                updateStatus(`Displayed ${lastResults.length} new forms for "${forms.base}".`);
             } catch (error) {
                 updateStatus(`Generation Error: ${error.message}`, true);
                 dom.resultsContainer.innerHTML = '<div class="placeholder">An error occurred.</div>';
@@ -516,36 +601,101 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (mode === 'suffix-prefix-linker') sorted.sort((a, b) => compareFields(a, b, ['suffix', 'prefix_family', 'suffix_prefix', 'linker']));
         else if (mode === 'prefix-suffix-linker') sorted.sort((a, b) => compareFields(a, b, ['prefix_family', 'suffix', 'suffix_prefix', 'linker']));
         else if (mode === 'pos-alpha') sorted.sort((a, b) => compareFields(a, b, ['part_of_grammar', 'form']));
-        else if (mode === 'random') sorted.sort(() => Math.random() - 0.5);
+        else if (mode === 'construction-pos-alpha') {
+            const order = { prefix: 0, suffix: 1, combined: 2 };
+            sorted.sort((a, b) => order[constructionType(a)] - order[constructionType(b)] || compareFields(a, b, ['part_of_grammar', 'form']));
+        } else if (mode === 'pos-construction-alpha') {
+            const order = { prefix: 0, suffix: 1, combined: 2 };
+            sorted.sort((a, b) => compareText(a.part_of_grammar, b.part_of_grammar) || order[constructionType(a)] - order[constructionType(b)] || byForm(a, b));
+        } else if (mode === 'random') sorted.sort(() => Math.random() - 0.5);
         return sorted;
+    }
+
+    function posParts(value) {
+        const normalized = String(value || '').trim().toLowerCase();
+        if (!normalized) return [];
+        if (normalized === 'compound noun') return ['noun'];
+        return [...new Set(normalized.split(/[\/+,&]+/).map(part => part.trim()).filter(Boolean))];
+    }
+
+    function filterRows(rows) {
+        const construction = dom.constructionFilter.value;
+        const pos = dom.posFilter.value;
+        const alternates = dom.alternateFilter.value;
+        return rows.filter(row => {
+            const type = constructionType(row);
+            if (construction !== 'all' && type !== construction) return false;
+            const parts = posParts(row.part_of_grammar);
+            if (pos === 'hybrid' && parts.length < 2) return false;
+            if (pos !== 'all' && pos !== 'hybrid' && !(parts.length === 1 && parts[0] === pos)) return false;
+            const hasAlternates = Boolean(String(row.aka_forms || '').trim());
+            if (alternates === 'with' && !hasAlternates) return false;
+            if (alternates === 'without' && hasAlternates) return false;
+            return true;
+        });
+    }
+
+    function renderWords(text) {
+        return String(text || '').split(/(\s+)/).map(part => /\s+/.test(part) ? part : `<span class="word-unit">${escapeHtml(part)}</span>`).join('');
+    }
+
+    function renderMorphology(text) {
+        return String(text || '').split(/\s+/).filter(Boolean).map(part => `<span class="morph-part">${escapeHtml(part)}</span>`).join(' ');
+    }
+
+    function renderMeanings(text) {
+        return String(text || '').split(' | ').filter(Boolean).map(item => {
+            const split = item.indexOf(' = ');
+            if (split < 0) return `<span class="meaning-item">${escapeHtml(item)}</span>`;
+            const key = item.slice(0, split);
+            const value = item.slice(split + 3);
+            return `<span class="meaning-item"><span class="meaning-key">${escapeHtml(key)}</span> = ${renderWords(value)}</span>`;
+        }).join(' · ');
     }
 
     function displayPrintLayout(rows) {
         if (!rows.length) {
+            displayedResults = [];
             dom.resultsContainer.innerHTML = '<div class="placeholder">No new definitions generated.</div>';
             dom.downloadBtn.classList.add('hidden');
             return;
         }
-        const sortedRows = sortRows(rows, dom.resultSort.value);
-        const entries = sortedRows.map(row => {
+        displayedResults = sortRows(filterRows(rows), dom.resultSort.value);
+        if (!displayedResults.length) {
+            dom.resultsContainer.innerHTML = '<div class="placeholder">No entries match the current filters.</div>';
+            dom.downloadBtn.classList.add('hidden');
+            updateStatus(`Displayed 0 of ${rows.length} generated forms.`);
+            return;
+        }
+        const entries = displayedResults.map(row => {
             const label = posLabel(row.part_of_grammar);
             const main = [
                 `<span class="w">${escapeHtml(row.form)}</span>`,
                 label ? `<i class="p">(${escapeHtml(label)})</i>` : '',
-                `<span class="d">${escapeHtml(row.definition)}</span>`,
-                row.analysis ? `<span class="t">${escapeHtml(row.analysis)}</span>` : ''
+                `<span class="d">${renderWords(row.definition)}</span>`
             ].filter(Boolean).join(' ');
-            const alternates = row.aka_forms ? `<div class="aka-row"><span class="aka-mark">\\</span> <span class="aka">*</span><span class="aka akac">${escapeHtml(row.aka_forms)}</span><span class="aka">*</span> <span class="aka-mark">\\</span></div>` : '';
-            return `<div class="e"><div class="entry-main">${main}</div>${alternates}</div>`;
+            const morphology = row.analysis ? `<div class="morph-row t">${renderMorphology(row.analysis)}</div>` : '';
+            const meanings = row.morpheme_meanings ? `<div class="meaning-row">${renderMeanings(row.morpheme_meanings)}</div>` : '';
+            const alternateForms = String(row.aka_forms || '').split(',').map(value => value.trim()).filter(Boolean);
+            const alternates = alternateForms.length ? `<div class="aka-row">[<span class="aka-label">alt.</span> <span class="aka akac">${alternateForms.map(form => `<span class="aka-form">${escapeHtml(form)}</span>`).join(', ')}</span>]</div>` : '';
+            return `<div class="e"><div class="entry-main">${main}</div>${morphology}${meanings}${alternates}</div>`;
         }).join('');
-        dom.resultsContainer.innerHTML = `<div class="spread">${entries}</div>`;
+        const flowClass = dom.layoutFlow.value === 'across' ? ' flow-across' : '';
+        dom.resultsContainer.innerHTML = `<div class="spread${flowClass}">${entries}</div>`;
         dom.downloadBtn.classList.remove('hidden');
+        updateStatus(`Displayed ${displayedResults.length} of ${rows.length} generated forms.`);
     }
 
     dom.downloadBtn.addEventListener('click', () => {
-        if (!lastResults.length) return;
+        if (!displayedResults.length) return;
         const activeWord = dom.wordIndex.querySelector('.active')?.dataset.word || document.getElementById('base-form').value || 'morphgen';
-        const csv = Papa.unparse(lastResults);
+        const exportRows = displayedResults.map(row => ({
+            ...row,
+            construction_type: constructionType(row),
+            display_part_of_speech: posLabel(row.part_of_grammar),
+            display_flow: dom.layoutFlow.value
+        }));
+        const csv = Papa.unparse(exportRows);
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
